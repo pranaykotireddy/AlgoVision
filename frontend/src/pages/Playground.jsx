@@ -1,6 +1,7 @@
 import { useState } from "react";
 import EditorPanel from "../components/EditorPanel";
 import OutputPanel from "../components/OutputPanel";
+import ChatPanel from "../components/ChatPanel";
 import { LANGUAGES } from "../data/languages";
 import { runCode } from "../utils/runCode";
 import { FaPlay, FaTrash } from "react-icons/fa";
@@ -38,14 +39,14 @@ export default function Playground() {
   };
 
   return (
-    <div className="pt-24 px-6 pb-6 max-w-[1600px] mx-auto">
+    <div className="pt-24 px-6 pb-6 max-w-[1800px] mx-auto">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
         <div>
           <h1 className="text-2xl font-bold">
             Code <span className="text-accent2">Playground</span>
           </h1>
           <p className="text-sm text-gray-400">
-            Write, run, and test your code in 7+ languages.
+            Write, run, and learn — with an AI tutor by your side.
           </p>
         </div>
 
@@ -66,7 +67,7 @@ export default function Playground() {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-4 h-[calc(100vh-220px)]">
+      <div className="grid lg:grid-cols-3 gap-4 h-[calc(100vh-220px)]">
         <EditorPanel
           language={language}
           onLanguageChange={handleLanguageChange}
@@ -79,6 +80,7 @@ export default function Playground() {
           stdin={stdin}
           onStdinChange={setStdin}
         />
+        <ChatPanel code={code} language={language} />
       </div>
     </div>
   );
