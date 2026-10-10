@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { askAI } from "../utils/askAI";
 import { FaRobot, FaPaperPlane, FaSpinner, FaMagic } from "react-icons/fa";
 
@@ -7,7 +9,7 @@ export default function ChatPanel({ code, language }) {
     {
       role: "assistant",
       content:
-        "Hi! 👋 I'm your DSA tutor. Ask me anything about your code or any algorithm. Try clicking 'Explain my code' to get started.",
+        "Hi! 👋 I'm your **DSA tutor**. Ask me anything about your code or any algorithm.\n\nTry clicking **Explain my code** to get started.",
     },
   ]);
   const [input, setInput] = useState("");
@@ -30,20 +32,15 @@ export default function ChatPanel({ code, language }) {
 
     const res = await askAI({
       prompt: isExplain
-        ? "Explain this code step by step. What does it do? What are the key operations?"
+        ? "Explain this code step by step in a friendly ChatGPT-style. Cover what it does, how it works, and why it matters."
         : text,
       code: isExplain ? code : undefined,
-      context: isExplain ? `Language: ${language.label}` : undefined,
+      context: isExplain ? language.label : undefined,
     });
 
     setMessages((prev) => [
       ...prev,
-      {
-        role: "assistant",
-        content: res.success
-          ? res.answer
-          : "Sorry, I couldn't get an answer. Please try again.",
-      },
+      { role: "assistant", content: res.answer },
     ]);
     setLoading(false);
   };
@@ -55,6 +52,7 @@ export default function ChatPanel({ code, language }) {
 
   return (
     <div className="flex flex-col h-full bg-card border border-white/10 rounded-xl overflow-hidden">
+      {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-white/10 bg-black/30">
         <div className="flex items-center gap-2 text-sm text-gray-300">
           <FaRobot className="text-accent" />
@@ -69,19 +67,91 @@ export default function ChatPanel({ code, language }) {
         </button>
       </div>
 
+      {/* Messages */}
       <div ref={scrollRef} className="flex-1 overflow-auto p-4 space-y-3 text-sm">
         {messages.map((msg, i) => (
           <div
             key={i}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            className={`flex ${
+              msg.role === "user" ? "justify-end" : "justify-start"
+            }`}
           >
             <div
-              className={`max-w-[85%] px-3 py-2 rounded-lg whitespace-pre-wrap ${msg.role === "user"
-                ? "bg-accent text-white"
-                : "bg-black/40 text-gray-200 border border-white/10"
-                }`}
+              className={`max-w-[90%] px-3 py-2 rounded-lg ${
+                msg.role === "user"
+                  ? "bg-accent text-white"
+                  : "bg-black/40 text-gray-200 border border-white/10"
+              }`}
             >
-              {msg.content}
+              {msg.role === "user" ? (
+                <div className="whitespace-pre-wrap">{msg.content}</div>
+              ) : (
+                <div className="prose prose-invert prose-sm max-w-none">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      p: ({ children }) => (
+                        <p className="mb-2 last:mb-0 leading-relaxed">
+                          {children}
+                        </p>
+                      ),
+                      strong: ({ children }) => (
+                        <strong className="text-white font-semibold">
+                          {children}
+                        </strong>
+                      ),
+                      em: ({ children }) => (
+                        <em className="text-accent2">{children}</em>
+                      ),
+                      ul: ({ children }) => (
+                        <ul className="list-disc pl-5 mb-2 space-y-1">
+                          {children}
+                        </ul>
+                      ),
+                      ol: ({ children }) => (
+                        <ol className="list-decimal pl-5 mb-2 space-y-1">
+                          {children}
+                        </ol>
+                      ),
+                      li: ({ children }) => (
+                        <li className="leading-relaxed">{children}</li>
+                      ),
+                      code: ({ inline, children }) =>
+                        inline ? (
+                          <code className="bg-accent/20 text-accent2 px-1 py-0.5 rounded text-xs font-mono">
+                            {children}
+                          </code>
+                        ) : (
+                          <pre className="bg-black/60 border border-white/10 rounded-md p-2 my-2 overflow-x-auto">
+                            <code className="text-green-300 text-xs font-mono">
+                              {children}
+                            </code>
+                          </pre>
+                        ),
+                      h1: ({ children }) => (
+                        <h1 className="text-base font-bold mb-2">{children}</h1>
+                      ),
+                      h2: ({ children }) => (
+                        <h2 className="text-sm font-bold mb-1.5 mt-2">
+                          {children}
+                        </h2>
+                      ),
+                      h3: ({ children }) => (
+                        <h3 className="text-sm font-semibold mb-1 mt-2">
+                          {children}
+                        </h3>
+                      ),
+                      blockquote: ({ children }) => (
+                        <blockquote className="border-l-2 border-accent pl-3 italic text-gray-400 my-2">
+                          {children}
+                        </blockquote>
+                      ),
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -95,6 +165,7 @@ export default function ChatPanel({ code, language }) {
         )}
       </div>
 
+      {/* Input */}
       <form
         onSubmit={handleSubmit}
         className="flex items-center gap-2 p-3 border-t border-white/10 bg-black/20"

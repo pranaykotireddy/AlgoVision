@@ -1,90 +1,35 @@
-/**
- * Multi-provider AI caller with automatic fallback.
- * Tries Pollinations first, then falls back to other free endpoints.
- */
+const BACKEND_URL = "http://localhost:5000/api/chat";
 
 export async function askAI({ prompt, code, context = "" }) {
-  const fullPrompt = buildPrompt({ prompt, code, context });
+  let userMessage = "";
 
-  // Provider 1: Pollinations (usually reliable, sometimes rate-limited)
-  try {
-    const res = await fetch(
-      `https://text.pollinations.ai/${encodeURIComponent(fullPrompt)}`,
-      { method: "GET" }
-    );
-    if (res.ok) {
-      const text = await res.text();
-      if (text && text.trim().length > 5) {
-        return { success: true, answer: text.trim() };
-      }
-    }
-  } catch (e) {
-    console.warn("Pollinations failed:", e.message);
+  if (code && code.trim().length > 0) {
+    userMessage += `Here's my ${context || ""} code:\n\n`;
+    userMessage += "```\n" + code + "\n```\n\n";
+    userMessage += `${prompt}\n\n`;
+    userMessage += "Explain it now in a friendly, structured, ChatGPT-style way.";
+  } else {
+    userMessage = prompt;
   }
 
-  // Provider 2: Pollinations POST API (different endpoint)
   try {
-    const res = await fetch("https://text.pollinations.ai/", {
+    const res = await fetch(BACKEND_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are a friendly DSA tutor. Explain in simple language. Keep answers under 200 words. Plain text only.",
-          },
-          { role: "user", content: fullPrompt },
-        ],
-        model: "openai",
+        messages: [{ role: "user", content: userMessage }],
       }),
     });
-    if (res.ok) {
-      const text = await res.text();
-      if (text && text.trim().length > 5) {
-        return { success: true, answer: text.trim() };
-      }
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
     }
-  } catch (e) {
-    console.warn("Pollinations POST failed:", e.message);
+
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content;
+    return { success: true, answer: text || "No response" };
+  } catch (err) {
+    return { success: false, answer: `AI error: ${err.message}` };
   }
-
-  // Provider 3: DuckDuckGo AI Chat (unofficial, works often)
-  try {
-    const res = await fetch(
-      `https://api.duckduckgo.com/?q=${encodeURIComponent(fullPrompt)}&format=json&no_html=1`
-    );
-    if (res.ok) {
-      const data = await res.json();
-      if (data.AbstractText) {
-        return { success: true, answer: data.AbstractText };
-      }
-    }
-  } catch (e) {
-    console.warn("DDG failed:", e.message);
-  }
-
-  // All failed
-  return {
-    success: false,
-    answer:
-      "The AI service is temporarily unavailable. Please try again in a few seconds.\n\nTip: The free tiers of these APIs are often rate-limited. Wait 30 seconds and retry.",
-  };
-}
-
-function buildPrompt({ prompt, code, context }) {
-  return `You are a friendly DSA (Data Structures & Algorithms) tutor.
-
-Rules:
-- Explain in simple, beginner-friendly language
-- Keep answers short and focused (under 200 words)
-- If code is provided, reference specific lines
-- Plain text only, no markdown
-
-${context ? `Context: ${context}\n` : ""}
-${code ? `Here is my code:\n${code}\n` : ""}
-
-User question: ${prompt}
-
-Answer:`;
 }
