@@ -1,61 +1,127 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import SortVisualizer3D from "../components/SortVisualizer3D";
-import { ALGORITHMS } from "../utils/sortingAlgorithms";
-import {
-  FaPlay,
-  FaPause,
-  FaStepForward,
-  FaRedo,
-  FaRandom,
+import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
+import CodeScene3D from "../components/CodeScene3D";
+import MiniCompiler from "../components/MiniCompiler";
+import axios from "axios"; 
+import { 
+  FaPlay, FaPause, FaStepForward, FaRedo, 
+  FaCode, FaTerminal, FaSpinner, FaRobot
 } from "react-icons/fa";
+import Editor, { useMonaco } from "@monaco-editor/react";
 
-const DEFAULT_ARRAY = [5, 2, 9, 1, 7, 3, 8, 4, 6, 10];
-
-function randomArray(size = 10, max = 20) {
-  return Array.from({ length: size }, () =>
-    Math.floor(Math.random() * max) + 1
-  );
-}
+const LANGUAGES = [
+  { id: "python", label: "Python (Tracer)", monaco: "python", defaultCode: `# Print a list to visualize\narr = [5, 2, 9, 1, 7]\nmax_val = max(arr)\nprint("Max:", max_val)` },
+];
 
 export default function Visualizer() {
-  const [algorithm, setAlgorithm] = useState("bubble");
-  const [array, setArray] = useState(DEFAULT_ARRAY);
-  const [steps, setSteps] = useState([]);
-  const [currentStep, setCurrentStep] = useState(0);
+  const location = useLocation();
+  const monaco = useMonaco();
+  const editorRef = useRef(null);
+  const decorationsRef = useRef([]);
+
+  const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
+  const [code, setCode] = useState(location.state?.code || LANGUAGES[0].defaultCode);
+  
+  const [frames, setFrames] = useState([]);
+  const [currentFrame, setCurrentFrame] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [speed, setSpeed] = useState(300); // ms per step
+  const [speed, setSpeed] = useState(500);
+  const [isTracing, setIsTracing] = useState(false);
+  
+  const [aiExplanation, setAiExplanation] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const [leftWidth, setLeftWidth] = useState(40);
+  const [topHeight, setTopHeight] = useState(60);
+  const [isDraggingX, setIsDraggingX] = useState(false);
+  const [isDraggingY, setIsDraggingY] = useState(false);
+  const containerRef = useRef(null);
+  const leftPanelRef = useRef(null);
 
   const playRef = useRef(null);
+  const aiPlayRef = useRef(null);
 
-  // Regenerate steps whenever array or algorithm changes
+  // Line highlight
   useEffect(() => {
-    const gen = ALGORITHMS[algorithm].generator;
-    const newSteps = gen(array);
-    setSteps(newSteps);
-    setCurrentStep(0);
-    setIsPlaying(false);
-  }, [array, algorithm]);
+    const activeLine = frames[currentFrame]?.line;
+    if (editorRef.current && monaco && activeLine) {
+      const decorations = [
+        {
+          range: new monaco.Range(activeLine, 1, activeLine, 1),
+          options: { isWholeLine: true, className: "myLineDecoration" },
+        },
+      ];
+      decorationsRef.current = editorRef.current.deltaDecorations(decorationsRef.current, decorations);
+    } else if (editorRef.current && monaco) {
+      decorationsRef.current = editorRef.current.deltaDecorations(decorationsRef.current, []);
+    }
+  }, [currentFrame, frames, monaco]);
 
-  // Auto-advance when playing
+  // Animation loop
   useEffect(() => {
     if (!isPlaying) {
       if (playRef.current) clearTimeout(playRef.current);
       return;
     }
-    if (currentStep >= steps.length - 1) {
+    if (currentFrame >= frames.length - 1) {
       setIsPlaying(false);
       return;
     }
     playRef.current = setTimeout(() => {
-      setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+      setCurrentFrame((c) => c + 1);
     }, speed);
-
     return () => clearTimeout(playRef.current);
-  }, [isPlaying, currentStep, steps, speed]);
+  }, [isPlaying, currentFrame, frames, speed]);
+
+  // Drag Resize
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (isDraggingX && containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const newWidth = ((e.clientX - rect.left) / rect.width) * 100;
+        if (newWidth > 20 && newWidth < 80) setLeftWidth(newWidth);
+      }
+      if (isDraggingY && leftPanelRef.current) {
+        const rect = leftPanelRef.current.getBoundingClientRect();
+        const newHeight = ((e.clientY - rect.top) / rect.height) * 100;
+        if (newHeight > 20 && newHeight < 80) setTopHeight(newHeight);
+      }
+    };
+    const handleMouseUp = () => {
+      setIsDraggingX(false);
+      setIsDraggingY(false);
+    };
+    if (isDraggingX || isDraggingY) {
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", handleMouseUp);
+    }
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [isDraggingX, isDraggingY]);
+
+  const handleTrace = async () => {
+    setIsTracing(true);
+    setFrames([]);
+    setCurrentFrame(0);
+    setIsPlaying(false);
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/trace", { code, language: selectedLang.id });
+      setFrames(res.data);
+      setIsPlaying(true);
+    } catch (err) {
+      alert("Trace failed. Check backend terminal for errors.");
+      console.error(err);
+    }
+    setIsTracing(false);
+  };
 
   const handlePlayPause = () => {
-    if (currentStep >= steps.length - 1) {
-      setCurrentStep(0);
+    if (frames.length === 0) return handleTrace();
+    if (currentFrame >= frames.length - 1) {
+      setCurrentFrame(0);
       setIsPlaying(true);
     } else {
       setIsPlaying((p) => !p);
@@ -63,159 +129,167 @@ export default function Visualizer() {
   };
 
   const handleStep = () => {
+    if (frames.length === 0) return handleTrace();
     setIsPlaying(false);
-    setCurrentStep((s) => Math.min(s + 1, steps.length - 1));
+    setCurrentFrame((c) => Math.min(c + 1, frames.length - 1));
   };
 
   const handleReset = () => {
     setIsPlaying(false);
-    setCurrentStep(0);
+    setCurrentFrame(0);
+    setAiExplanation("");
+    if (aiPlayRef.current) clearInterval(aiPlayRef.current);
   };
 
-  const handleShuffle = () => {
-    setArray(randomArray());
+  const handleExplainWithAI = async () => {
+    setAiLoading(true);
+    try {
+      const res = await axios.post("http://localhost:5000/api/explain", { code });
+      if (Array.isArray(res.data)) setAiExplanation(res.data);
+    } catch (err) {
+      const lines = code.split("\n");
+      setAiExplanation(lines.map((line, idx) => ({ line: idx + 1, explanation: line.trim() || "(empty)" })));
+    }
+    setAiLoading(false);
+  };
+
+  const handleRunCode = () => {
+    const runBtn = document.getElementById("mini-compiler-run");
+    if (runBtn) runBtn.click();
+  };
+
+  const handleVisualizeArray = (newArray) => {
+    setFrames([{ line: 1, variables: { arr: newArray }, output: "" }]);
+    setCurrentFrame(0);
     setIsPlaying(false);
+    setAiExplanation("");
   };
 
-  const handleArraySizeChange = (size) => {
-    setArray(randomArray(size, size * 2));
-  };
+  const currentState = frames[currentFrame] || { line: 0, variables: {}, output: "" };
+  
+  let currentArray = currentState.array;
+  if (!currentArray && currentState.variables) {
+    const arrKey = Object.keys(currentState.variables).find(k => Array.isArray(currentState.variables[k]));
+    if (arrKey) currentArray = currentState.variables[arrKey];
+  }
 
-  const currentState = steps[currentStep] || { array, comparing: null, swapped: null };
-  const progress = steps.length > 1 ? ((currentStep + 1) / steps.length) * 100 : 0;
-  const isDone = currentStep >= steps.length - 1;
+  const progress = frames.length > 1 ? ((currentFrame + 1) / frames.length) * 100 : 0;
+  const isDone = currentFrame >= frames.length - 1;
 
   return (
-    <div className="pt-24 px-6 pb-6 max-w-[1600px] mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">
-          3D <span className="text-accent2">Visualizer</span>
-        </h1>
-        <p className="text-sm text-gray-400">
-          Watch sorting algorithms come alive. Drag to rotate, scroll to zoom.
-        </p>
-      </div>
+    <div className="pt-24 px-4 pb-4 h-screen flex flex-col max-w-[2000px] mx-auto select-none">
+      
+      {/* Top Bar (NO CUSTOM INPUT) */}
+      <div className="bg-card border border-white/10 rounded-xl p-3 mb-4 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div className="flex items-center gap-4">
+          <select value={selectedLang.id} className="bg-bg border border-white/20 text-sm px-3 py-1.5 rounded-lg text-white font-semibold">
+            {LANGUAGES.map((lang) => <option key={lang.id} value={lang.id}>{lang.label}</option>)}
+          </select>
 
-      {/* Controls */}
-      <div className="bg-card border border-white/10 rounded-xl p-4 mb-4 space-y-4">
-        {/* Row 1: Algorithm + Array size */}
-        <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">Algorithm:</span>
-            <select
-              value={algorithm}
-              onChange={(e) => setAlgorithm(e.target.value)}
-              className="bg-bg border border-white/20 text-sm px-3 py-1 rounded-md text-white outline-none focus:border-accent"
-            >
-              {Object.entries(ALGORITHMS).map(([key, algo]) => (
-                <option key={key} value={key}>
-                  {algo.name} ({algo.complexity})
-                </option>
-              ))}
-            </select>
-          </div>
+          <button onClick={handleTrace} disabled={isTracing} className="flex items-center gap-2 px-4 py-1.5 rounded-lg border border-accent2/50 text-accent2 hover:bg-accent2/10 text-sm font-semibold">
+            {isTracing ? <FaSpinner className="animate-spin" /> : <FaTerminal />} Trace Code
+          </button>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400">Size:</span>
-            <select
-              value={currentState.array.length}
-              onChange={(e) => handleArraySizeChange(parseInt(e.target.value))}
-              className="bg-bg border border-white/20 text-sm px-3 py-1 rounded-md text-white outline-none focus:border-accent"
-            >
-              {[5, 8, 10, 12, 15, 20].map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
+            <button onClick={handlePlayPause} className="flex items-center gap-2 px-4 py-1.5 rounded-lg bg-accent text-white text-sm font-semibold">
+              {isPlaying ? <FaPause /> : <FaPlay />} {isPlaying ? "Pause" : isDone ? "Replay" : "Play"}
+            </button>
+            <button onClick={handleStep} disabled={isDone} className="px-3 py-1.5 rounded-lg border border-white/20 text-sm">
+              <FaStepForward />
+            </button>
+            <button onClick={handleReset} className="px-3 py-1.5 rounded-lg border border-white/20 text-sm">
+              <FaRedo />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 w-48">
+            <span className="text-xs text-gray-400">Speed</span>
+            <input type="range" min="100" max="1000" step="100" value={1100 - speed} onChange={(e) => setSpeed(1100 - parseInt(e.target.value))} className="flex-1 accent-accent" />
+          </div>
+        </div>
+
+        <div className="text-xs text-gray-400 font-mono">
+          Step {frames.length > 0 ? currentFrame + 1 : 0} / {frames.length}
+        </div>
+      </div>
+
+      {/* Main Layout */}
+      <div ref={containerRef} className="flex-1 min-h-0 flex flex-row gap-0">
+        
+        <div ref={leftPanelRef} style={{ width: `${leftWidth}%` }} className="flex flex-col min-h-0 pr-2 gap-2">
+          
+          <div style={{ height: `${topHeight}%` }} className="bg-card border border-white/10 rounded-xl overflow-hidden flex flex-col">
+            <div className="bg-black/30 px-4 py-2 border-b border-white/10 flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm text-gray-300"><FaCode /> Source Code</div>
+              <button onClick={handleRunCode} className="flex items-center gap-1 text-xs px-3 py-1 bg-accent text-white rounded-md">
+                <FaPlay /> Run
+              </button>
+            </div>
+            <div className="flex-1 min-h-0">
+              <Editor height="100%" language={selectedLang.monaco} value={code} onChange={(val) => setCode(val || "")} onMount={(editor) => { editorRef.current = editor; }} theme="vs-dark" options={{ readOnly: false, minimap: { enabled: false }, fontSize: 13 }} />
+            </div>
+          </div>
+
+          <div onMouseDown={() => setIsDraggingY(true)} className="h-2 w-full flex items-center justify-center cursor-row-resize hover:bg-white/10 rounded-md">
+            <div className="w-16 h-1 bg-gray-600 rounded-full" />
+          </div>
+
+          <div className="h-1/4 bg-card border border-white/10 rounded-xl overflow-hidden">
+            <MiniCompiler code={code} language={selectedLang.id} onVisualize={handleVisualizeArray} />
+          </div>
+
+          <div className="flex-1 bg-card border border-white/10 rounded-xl flex flex-col overflow-hidden">
+            <div className="bg-black/30 px-4 py-2 border-b border-white/10 flex justify-between items-center">
+              <div className="flex items-center gap-2 text-sm text-accent"><FaRobot /> AI Explanation</div>
+              <button onClick={handleExplainWithAI} disabled={aiLoading} className="text-xs px-3 py-1 bg-accent/20 text-accent2 rounded-md">
+                {aiLoading ? <FaSpinner className="animate-spin" /> : "Explain"}
+              </button>
+            </div>
+            <div className="p-4 overflow-auto text-sm text-gray-300 font-sans">
+              {Array.isArray(aiExplanation) ? (
+                aiExplanation.map((step, i) => (
+                  <div key={i} className={`p-2 rounded-lg mb-2 ${currentState.line === step.line ? 'bg-accent/20 border-l-4 border-accent' : 'border-l-4 border-transparent'}`}>
+                    <span className="font-bold text-accent2 text-xs">Line {step.line}</span>
+                    <p className="mt-1">{step.explanation}</p>
+                  </div>
+                ))
+              ) : (
+                "Click 'Explain' to get a line-by-line AI explanation."
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div onMouseDown={() => setIsDraggingX(true)} className="w-2 flex items-center justify-center cursor-col-resize hover:bg-white/10 rounded-md">
+          <div className="h-16 w-1 bg-gray-600 rounded-full" />
+        </div>
+
+        <div className="flex-1 bg-card border border-white/10 rounded-xl overflow-hidden relative flex flex-col">
+          <div className="flex-1 relative">
+            <CodeScene3D variables={currentState.variables} array={currentArray} activeLine={currentState.line} />
+          </div>
+          
+          <div className="h-1/3 flex border-t border-white/10 bg-black/30">
+            <div className="w-1/2 border-r border-white/10 p-4 overflow-auto font-mono text-xs">
+              <div className="text-gray-400 mb-2">Variables</div>
+              {Object.entries(currentState.variables || {}).map(([k, v]) => (
+                <div key={k} className="flex gap-2 mb-1">
+                  <span className="text-accent2">{k}:</span>
+                  <span className="text-white">{JSON.stringify(v)}</span>
+                </div>
               ))}
-            </select>
+            </div>
+            <div className="w-1/2 p-4 overflow-auto font-mono text-xs text-green-300 whitespace-pre-wrap">
+              <div className="text-gray-400 mb-2">Console</div>
+              {currentState.output || "(no output)"}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-            <span className="text-xs text-gray-400 whitespace-nowrap">
-              Speed:
-            </span>
-            <input
-              type="range"
-              min="50"
-              max="1000"
-              step="50"
-              value={1050 - speed}
-              onChange={(e) => setSpeed(1050 - parseInt(e.target.value))}
-              className="flex-1 accent-accent"
-            />
-            <span className="text-xs text-gray-500 w-12">
-              {1050 - speed}ms
-            </span>
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/5">
+            <div className="h-full bg-gradient-to-r from-accent to-accent2 transition-all duration-150" style={{ width: `${progress}%` }} />
           </div>
         </div>
 
-        {/* Row 2: Playback buttons */}
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            onClick={handlePlayPause}
-            className="flex items-center gap-2 px-5 py-2 rounded-lg bg-accent hover:bg-accent/80 font-semibold text-sm transition-all"
-          >
-            {isPlaying ? <FaPause /> : <FaPlay />}
-            {isPlaying ? "Pause" : isDone ? "Replay" : "Play"}
-          </button>
-
-          <button
-            onClick={handleStep}
-            disabled={isDone}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:bg-white/5 text-sm transition-all disabled:opacity-50"
-          >
-            <FaStepForward /> Step
-          </button>
-
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:bg-white/5 text-sm transition-all"
-          >
-            <FaRedo /> Reset
-          </button>
-
-          <button
-            onClick={handleShuffle}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:bg-white/5 text-sm transition-all"
-          >
-            <FaRandom /> Shuffle
-          </button>
-
-          <div className="ml-auto text-xs text-gray-400 font-mono">
-            Step {currentStep + 1} / {steps.length}
-          </div>
-        </div>
-
-        {/* Progress bar */}
-        <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-accent to-accent2 transition-all duration-150"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* 3D Canvas */}
-      <div className="bg-card border border-white/10 rounded-xl overflow-hidden h-[calc(100vh-380px)] min-h-[400px]">
-        <SortVisualizer3D
-          array={currentState.array}
-          comparing={currentState.comparing}
-          swapped={currentState.swapped}
-        />
-      </div>
-
-      {/* Legend */}
-      <div className="flex items-center justify-center gap-6 mt-4 text-xs text-gray-400">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-accent" /> Default
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-yellow-400" /> Comparing
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-sm bg-red-500" /> Swapping
-        </div>
       </div>
     </div>
   );

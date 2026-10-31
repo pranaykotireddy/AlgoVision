@@ -1,36 +1,27 @@
 import axios from "axios";
 
-const PISTON_URL = "https://emkc.org/api/v2/piston/execute";
+// 🔥 Point to your backend (NOT the API directly)
+const BACKEND_URL = "http://localhost:5000/api/run";
 
-export async function runCode({ languageId, version, code, stdin = "" }) {
-  const payload = {
-    language: languageId,
-    version: version,
-    files: [{ content: code }],
-    stdin: stdin,
-  };
-
+export async function runCode({ languageId, code, stdin = "" }) {
   try {
-    const { data } = await axios.post(PISTON_URL, payload, {
-      headers: { "Content-Type": "application/json" },
-      timeout: 15000,
+    const { data } = await axios.post(BACKEND_URL, {
+      language: languageId,
+      code: code,
+      stdin: stdin,
     });
 
-    const run = data.run || {};
     return {
-      success: !run.stderr,
-      stdout: run.stdout || "",
-      stderr: run.stderr || "",
-      exitCode: run.code ?? 0,
+      success: data.status === "success",
+      stdout: data.output || "",
+      stderr: data.error || "",
+      exitCode: data.exit_code ?? 0,
     };
   } catch (err) {
     return {
       success: false,
       stdout: "",
-      stderr:
-        err?.response?.data?.message ||
-        err.message ||
-        "Failed to reach Piston API.",
+      stderr: err?.response?.data?.error || err.message || "Failed to reach compiler.",
       exitCode: -1,
     };
   }

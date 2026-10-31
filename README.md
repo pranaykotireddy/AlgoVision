@@ -1,192 +1,134 @@
 # 🚀 AlgoVision
 
-> A full-stack DSA learning platform with a multi-language code playground, AI-powered tutor, and interactive 3D algorithm visualizations.
+> A full-stack **DSA learning platform** with AI code tracing, 3D algorithm visualization, multi-language code execution, and interactive AI tutoring.
 
-[![Status](https://img.shields.io/badge/status-active-success)]()
-[![License](https://img.shields.io/badge/license-MIT-blue)]()
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen)]()
+![AlgoVision Banner](https://img.shields.io/badge/AlgoVision-Learn_DSA_Visually-7c3aed?style=for-the-badge)
+
+[![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)](https://react.dev)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)](https://nodejs.org)
+[![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-ff6b35)](https://groq.com)
+[![Three.js](https://img.shields.io/badge/Three.js-3D_Visualization-000000?logo=three.js&logoColor=white)](https://threejs.org)
+[![License](https://img.shields.io/badge/License-MIT-green)](./LICENSE)
 
 ---
 
 ## ✨ Features
 
-- 💻 **Code Playground** — Write, run, and test code in 7+ languages (Python, C++, Java, JavaScript, C, Go, Rust) with real-time stdin/stdout
-- 🤖 **AI Tutor** — ChatGPT-style assistant that explains your code step-by-step with markdown rendering and real-world analogies
-- 🎨 **3D Visualizations** — Watch sorting, trees, and graph algorithms come alive in interactive 3D *(in progress)*
-- 📚 **Learn Hub** — Topic-wise DSA content with code examples and interview notes *(planned)*
-- 🔐 **Secure Backend** — API keys held server-side, never exposed to the browser
+### 🎨 3D Algorithm Visualizations (10 Types)
+- **Sorting Race** — Watch bars animate through bubble, selection, insertion sort
+- **Array Blocks** — Interactive 3D representation of any array
+- **Sliding Window** — Visual window that slides across the array
+- **Two Pointers** — Yellow and red pointers move toward each other
+- **Binary Search** — Watch elements eliminate until the target is found
+- **HashMap Buckets** — 3D bucket visualization of hash collisions
+- **Kadane's Algorithm** — Positive/negative bars for running sum
+- **Linked List Reversal** — Rotate and reverse node pointers in 3D
+- **Recursion Call Stack** — See the stack grow as functions recurse
+- **Stack Push/Pop** — Watch elements enter and leave a 3D stack
+
+### 🧠 AI Code Tracer
+Write Python code, click **Trace**, and watch it execute line-by-line. The AI (Groq LLaMA 3.3) simulates the code and returns every frame with:
+- Line being executed
+- Current variables
+- Array state
+- Console output
+
+### 💻 Multi-Language Code Playground
+- Write, run, and debug in **7 languages**: Python, JavaScript, C++, Java, C, Go, Rust
+- Monaco Editor (VS Code in the browser)
+- Run code and view real-time output
+
+### 🤖 AI Tutor
+- **Explain My Code** — Line-by-line explanations from Groq AI
+- **Explain Any Topic** — Ask about Big O, recursion, DP, etc.
+- **Chat with AI** — Persistent conversation with context
+
+### 📚 Learn Hub (45 DSA Topics)
+- Beginner → Expert roadmap
+- Each topic includes:
+  - Deep theory
+  - Multi-language code examples
+  - Practice problems (Easy / Medium / Hard)
+  - Interview notes
+  - GeeksforGeeks links
 
 ---
 
 ## 🛠️ Tech Stack
 
-**Frontend**
-- ⚛️ React 18 + Vite
-- 🎨 Tailwind CSS
-- 🔀 React Router v6
-- 🎬 Framer Motion
-- 💻 Monaco Editor (VS Code engine)
-- 📝 React Markdown + remark-gfm
-
-**Backend**
-- 🟢 Node.js + Express
-- 🔑 dotenv for environment variables
-- 🧠 Groq API (Llama 3.3 / GPT-OSS) — blazing fast LLM inference
-
-**Code Execution**
-- ⚙️ Piston API — free, no key needed, 40+ languages
-
-**Planned**
-- 🎮 Three.js + React Three Fiber (3D visualizations)
-- 🗄️ MongoDB (user progress)
-- 🔐 JWT auth
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 18, Vite, Tailwind CSS v3 |
+| **Routing** | React Router v6 |
+| **Animations** | Framer Motion |
+| **Code Editor** | Monaco Editor (VS Code engine) |
+| **3D Rendering** | Three.js, React Three Fiber, Drei |
+| **Code Execution** | OnlineCompiler.io API |
+| **AI** | Groq API (LLaMA 3.3 70B) |
+| **Backend** | Node.js, Express |
+| **Code Tracer** | AI-powered execution simulation |
+| **Deployment** | Vercel (frontend), Render (backend) |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js 18+
-- A free Groq API key: [console.groq.com/keys](https://console.groq.com/keys)
+- **Node.js 18+**
+- **Groq API Key** (free at [console.groq.com](https://console.groq.com))
+- **OnlineCompiler.io API Key** (free at [onlinecompiler.io](https://onlinecompiler.io))
 
 ### 1. Clone the repo
 
 ```bash
 git clone https://github.com/pranaykotireddy/AlgoVision.git
 cd AlgoVision
-```
 
-### 2. Set up the backend
 
-```bash
-cd backend
-npm install
-```
-
-Create a `.env` file (copy from `.env.example`):
-
-```
-GROQ_API_KEY=your_real_key_here
-PORT=5000
-```
-
-Start the backend:
-
-```bash
-npm run dev
-```
-
-You should see:
-```
-🚀 Backend running on http://localhost:5000
-🔑 Groq key loaded: YES
-✅ N models available
-```
-
-### 3. Set up the frontend (new terminal)
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open [http://localhost:5173](http://localhost:5173)
-
----
-
-## 📂 Project Structure
-
-```
 AlgoVision/
 ├── backend/
 │   ├── routes/
-│   │   └── chat.js           # Groq LLM proxy
+│   │   ├── chat.js         # AI chat
+│   │   ├── explain.js      # Line-by-line code explanation
+│   │   ├── extract.js      # AI array extraction
+│   │   ├── run.js          # Code execution (OnlineCompiler)
+│   │   ├── trace.js        # Python tracer (sys.settrace)
+│   │   └── visualize.js    # AI code simulator
 │   ├── server.js
-│   ├── .env.example
+│   ├── .env
 │   └── package.json
 │
 └── frontend/
     ├── src/
-    │   ├── components/       # Navbar, EditorPanel, OutputPanel, ChatPanel
-    │   ├── pages/            # Home, Playground, Learn, Visualizer
-    │   ├── data/             # Language configs
-    │   ├── utils/            # runCode (Piston), askAI (backend)
+    │   ├── components/
+    │   │   ├── Navbar.jsx
+    │   │   ├── EditorPanel.jsx
+    │   │   ├── OutputPanel.jsx
+    │   │   ├── ChatPanel.jsx
+    │   │   ├── MiniCompiler.jsx
+    │   │   ├── CodeScene3D.jsx
+    │   │   ├── DSAScene3D.jsx
+    │   │   └── ErrorBoundary.jsx
+    │   ├── pages/
+    │   │   ├── Home.jsx
+    │   │   ├── Playground.jsx
+    │   │   ├── Learn.jsx
+    │   │   ├── TopicDetail.jsx
+    │   │   └── Visualizer.jsx
+    │   ├── data/
+    │   │   ├── languages.js
+    │   │   ├── topics1.js
+    │   │   ├── topics2.js
+    │   │   ├── topics3.js
+    │   │   ├── topics4.js
+    │   │   ├── topics5.js
+    │   │   ├── topics6.js
+    │   │   └── topics7.js
+    │   ├── utils/
+    │   │   ├── runCode.js
+    │   │   ├── askAI.js
+    │   │   └── sortingAlgorithms.js
     │   ├── App.jsx
-    │   └── main.jsx
+    │   ├── main.jsx
+    │   └── index.css
     └── package.json
-```
-
----
-
-## 🎯 Usage
-
-### Code Playground
-
-1. Open `/playground`
-2. Pick a language from the dropdown
-3. Write or paste code
-4. Click **Run** to execute
-5. Use the **stdin** box for program input
-
-### AI Tutor
-
-1. In the same Playground page
-2. Click **"Explain my code"** to get a step-by-step explanation
-3. Or type any DSA question in the chat: *"What is Big O notation?"*
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1** — Foundation (React + Vite + Tailwind + Routing)
-- [x] **Phase 2** — Code playground (Monaco + Piston API)
-- [x] **Phase 3** — AI tutor (Groq + Node backend + markdown UI)
-- [ ] **Phase 4** — 3D algorithm visualizations (Three.js)
-- [ ] **Phase 5** — Learn hub with DSA topics
-- [ ] **Phase 6** — User accounts + progress tracking (JWT + MongoDB)
-- [ ] **Phase 7** — Deploy (Vercel + Render) + custom domain
-
----
-
-## 🧠 How the AI Tutor Works
-
-```
-┌─────────────┐      POST /api/chat      ┌──────────────┐
-│   React     │ ───────────────────────► │   Express    │
-│  (browser)  │                          │   (Node)     │
-└─────────────┘                          └──────┬───────┘
-                                                │
-                                                │ Groq API call
-                                                │ (with secret key)
-                                                ▼
-                                         ┌──────────────┐
-                                         │  Groq LLM    │
-                                         │  (Llama 3.3) │
-                                         └──────────────┘
-```
-
-**Security:** The API key lives only in `backend/.env` and never reaches the browser.
-
----
-
-## 🤝 Contributing
-
-Pull requests are welcome! For major changes, please open an issue first.
-
----
-
-## 📜 License
-
-MIT © [Pranay Kotireddy](https://github.com/pranaykotireddy)
-
----
-
-## 🙏 Acknowledgements
-
-- [Monaco Editor](https://microsoft.github.io/monaco-editor/)
-- [Piston API](https://github.com/engineer-man/piston)
-- [Groq](https://groq.com/)
-- [Vite](https://vitejs.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [React Three Fiber](https://docs.pmnd.rs/react-three-fiber)

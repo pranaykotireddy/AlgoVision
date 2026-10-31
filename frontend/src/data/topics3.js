@@ -1,166 +1,282 @@
 export const TOPICS_3 = [
   {
-    id: "sliding-window",
-    title: "6. Sliding Window",
-    category: "Beginner",
+    id: "intervals",
+    title: "19. Intervals",
+    category: "Intermediate",
     difficulty: "Medium",
-    icon: "🪟",
-    shortDesc: "Fixed window, variable window.",
-    tutorialLink: "https://www.geeksforgeeks.org/window-sliding-technique/",
+    icon: "⏱️",
+    shortDesc: "Merge overlapping intervals, scheduling.",
+    tutorialLink: "https://www.geeksforgeeks.org/merging-intervals/",
     theory: `### 1. Core Concepts
-Sliding Window maintains a continuous section of an array or string and moves that section to solve problems efficiently.
-- **Fixed-size window**
-- **Variable-size window**
-- **Window expansion**
-- **Window contraction**
-- **Left and right boundaries**
-- **Window sum**
-- **Window frequency**
-- **Maximum/minimum subarray**
-- **Longest substring problems**
+- Interval: [start, end].
+- Overlapping / Non-overlapping.
+- Merge Intervals.
+- Insert Interval.
+- Interval Scheduling.
+- Meeting Rooms.
 
-### 2. Code Implementation (Max Sum of K)
+### 2. How It Works
+\`[[1, 3], [2, 6], [8, 10], [9, 12]]\`
+1. Sort by start: \`[[1, 3], [2, 6], [8, 10], [9, 12]]\`
+2. Merge [1, 3] & [2, 6] → [1, 6].
+3. Merge [8, 10] & [9, 12] → [8, 12].
+Result: \`[[1, 6], [8, 12]]\`
+
+### 3. Code Implementation
 \`\`\`python
-arr = [2, 1, 5, 1, 3, 2]
-k = 3
-window_sum = sum(arr[:k])
-maximum = window_sum
-for i in range(k, len(arr)):
-    window_sum += arr[i]
-    window_sum -= arr[i-k]
-    maximum = max(maximum, window_sum)
-print(maximum)
+def merge_intervals(intervals):
+    intervals.sort(key=lambda x: x[0])
+    res = []
+    for interval in intervals:
+        if not res or res[-1][1] < interval[0]:
+            res.append(interval)
+        else:
+            res[-1][1] = max(res[-1][1], interval[1])
+    return res
 \`\`\``,
     complexity: [
-      { op: "Time Complexity", time: "O(N)", space: "O(1)" },
+      { op: "Sorting", time: "O(N log N)", space: "O(1)" },
+      { op: "Merging", time: "O(N)", space: "O(N)" },
     ],
     problems: {
-      Easy: ["Maximum sum of K consecutive elements.", "Average of every window of size K."],
-      Medium: ["Longest substring without repeating characters.", "Minimum Size Subarray Sum.", "Maximum number of vowels in a substring."],
-      Hard: ["Sliding Window Maximum.", "Minimum Window Substring.", "Longest substring with at most K distinct characters."],
+      Easy: ["Check Two Intervals Overlap.", "Maximum Number of Meetings.", "Non-overlapping Intervals."],
+      Medium: ["Merge Intervals.", "Insert Interval.", "Meeting Rooms II.", "Minimum Arrows to Burst Balloons."],
+      Hard: ["Employee Free Time.", "My Calendar III.", "Minimum Interval to Include Each Query."],
     },
     codeExamples: {
-      python: "arr = [2, 1, 5, 1, 3, 2]\nk = 3\nwindow_sum = sum(arr[:k])\nmaximum = window_sum\nfor i in range(k, len(arr)):\n    window_sum += arr[i] - arr[i-k]\n    maximum = max(maximum, window_sum)\nprint(maximum)",
-      cpp: "int arr[] = {2, 1, 5, 1, 3, 2};\nint k = 3, n = 6;\nint windowSum = 0;\nfor(int i=0; i<k; i++) windowSum += arr[i];\nint maxSum = windowSum;\nfor(int i=k; i<n; i++) {\n    windowSum += arr[i] - arr[i-k];\n    maxSum = max(maxSum, windowSum);\n}",
-      java: "int[] arr = {2, 1, 5, 1, 3, 2};\nint k = 3;\nint windowSum = 0;\nfor (int i = 0; i < k; i++) windowSum += arr[i];\nint maxSum = windowSum;\nfor (int i = k; i < arr.length; i++) {\n    windowSum += arr[i] - arr[i - k];\n    maxSum = Math.max(maxSum, windowSum);\n}",
-      js: "const arr = [2, 1, 5, 1, 3, 2];\nconst k = 3;\nlet windowSum = 0;\nfor (let i = 0; i < k; i++) windowSum += arr[i];\nlet maxSum = windowSum;\nfor (let i = k; i < arr.length; i++) {\n    windowSum += arr[i] - arr[i - k];\n    maxSum = Math.max(maxSum, windowSum);\n}",
+      python: "def merge_intervals(intervals):\n    intervals.sort(key=lambda x: x[0])\n    result = []\n    for interval in intervals:\n        if not result or result[-1][1] < interval[0]:\n            result.append(interval)\n        else:\n            result[-1][1] = max(result[-1][1], interval[1])\n    return result",
+      cpp: "vector<vector<int>> merge(vector<vector<int>>& intervals) {\n    sort(intervals.begin(), intervals.end());\n    vector<vector<int>> result;\n    for (auto& interval : intervals) {\n        if (result.empty() || result.back()[1] < interval[0]) result.push_back(interval);\n        else result.back()[1] = max(result.back()[1], interval[1]);\n    }\n    return result;\n}",
+      java: "int[][] merge(int[][] intervals) {\n    Arrays.sort(intervals, (a, b) -> a[0] - b[0]);\n    List<int[]> result = new ArrayList<>();\n    for (int[] interval : intervals) {\n        if (result.isEmpty() || result.get(result.size()-1)[1] < interval[0])\n            result.add(interval);\n        else result.get(result.size()-1)[1] = Math.max(result.get(result.size()-1)[1], interval[1]);\n    }\n    return result.toArray(new int[result.size()][]);\n}",
+      js: "function merge(intervals) {\n  intervals.sort((a, b) => a[0] - b[0]);\n  const result = [];\n  for (const interval of intervals) {\n    if (!result.length || result[result.length - 1][1] < interval[0])\n      result.push(interval);\n    else result[result.length - 1][1] = Math.max(result[result.length - 1][1], interval[1]);\n  }\n  return result;\n}",
     },
-    interviewPoints: [
-      "Fixed window: window size stays constant.",
-      "Variable window: window size changes according to conditions.",
-      "Many problems improve from O(n × k) to O(n).",
-      "Sliding window generally works on contiguous ranges.",
-    ],
+    interviewPoints: ["Most interval problems start with sorting.", "Usually sort by starting time.", "Compare current with last merged interval.", "Merging takes O(N log N)."],
   },
   {
-    id: "prefix-sum",
-    title: "7. Prefix Sum",
-    category: "Beginner",
+    id: "cyclic-sort",
+    title: "20. Cyclic Sort",
+    category: "Intermediate",
     difficulty: "Medium",
-    icon: "➕",
-    shortDesc: "Prefix sum, suffix sum, range queries.",
-    tutorialLink: "https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/",
+    icon: "🔄",
+    shortDesc: "In-place sorting for known range arrays.",
+    tutorialLink: "https://www.geeksforgeeks.org/cycle-sort/",
     theory: `### 1. Core Concepts
-Prefix Sum is a technique that stores cumulative sums to answer range-sum queries efficiently.
-- **Prefix sum array**
-- **Cumulative sum**
-- **Range sum queries**
-- **Suffix sum**
-- **2D prefix sum**
-- **Prefix XOR**
-- **Subarray sum**
-- **Prefix sum with HashMap**
+Cyclic Sort is an in-place sorting technique for arrays with numbers in a known range (1 to N).
+- Correct Index: value x belongs at index x - 1.
+- Missing Number / Duplicate Number.
 
-### 2. Code Implementation
-\`\`\`python
-arr = [2, 4, 6, 8, 10]
-prefix = [0]
-for num in arr:
-    prefix.append(prefix[-1] + num)
-
-# Sum from index 1 to 3
-left = 1
-right = 3
-print(prefix[right + 1] - prefix[left])
-\`\`\``,
-    complexity: [
-      { op: "Preprocessing", time: "O(N)", space: "O(N)" },
-      { op: "Range Query", time: "O(1)", space: "O(1)" },
-    ],
+### 2. How It Works
+Input: \`[3, 1, 5, 4, 2]\`
+1 → Index 0, 2 → Index 1, 3 → Index 2, 4 → Index 3, 5 → Index 4.
+Sorted: \`[1, 2, 3, 4, 5]\``,
+    complexity: [{ op: "Time Complexity", time: "O(N)", space: "O(1)" }],
     problems: {
-      Easy: ["Build a prefix sum array.", "Find running sum.", "Range sum query."],
-      Medium: ["Subarray Sum Equals K.", "Equilibrium Point.", "Find pivot index."],
-      Hard: ["Count subarrays with a given sum.", "Maximum size subarray with sum K.", "2D range sum queries."],
+      Easy: ["Missing Number.", "Find All Numbers Disappeared.", "Find the Duplicate Number."],
+      Medium: ["Find All Duplicates.", "First Missing Positive.", "Set Mismatch.", "Find the Corrupt Pair."],
+      Hard: ["Find Multiple Missing.", "Find the Smallest Missing Positive."],
     },
     codeExamples: {
-      python: "arr = [2, 4, 6, 8, 10]\nprefix = [0]\nfor num in arr: prefix.append(prefix[-1] + num)\nprint(prefix[4] - prefix[1])",
-      cpp: "int arr[] = {2, 4, 6, 8, 10};\nint n = 5;\nint prefix[n+1];\nprefix[0] = 0;\nfor(int i=0; i<n; i++) prefix[i+1] = prefix[i] + arr[i];\ncout << prefix[4] - prefix[1];",
-      java: "int[] arr = {2, 4, 6, 8, 10};\nint[] prefix = new int[arr.length + 1];\nfor (int i = 0; i < arr.length; i++) prefix[i+1] = prefix[i] + arr[i];\nSystem.out.println(prefix[4] - prefix[1]);",
-      js: "const arr = [2, 4, 6, 8, 10];\nconst prefix = [0];\nfor (let i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);\nconsole.log(prefix[4] - prefix[1]);",
+      python: "def cyclic_sort(arr):\n    i = 0\n    while i < len(arr):\n        correct = arr[i] - 1\n        if arr[i] != arr[correct]:\n            arr[i], arr[correct] = arr[correct], arr[i]\n        else:\n            i += 1\n    return arr",
+      cpp: "void cyclicSort(vector<int>& arr) {\n    int i = 0, n = arr.size();\n    while (i < n) {\n        int correct = arr[i] - 1;\n        if (arr[i] != arr[correct]) swap(arr[i], arr[correct]);\n        else i++;\n    }\n}",
+      java: "void cyclicSort(int[] arr) {\n    int i = 0;\n    while (i < arr.length) {\n        int correct = arr[i] - 1;\n        if (arr[i] != arr[correct]) {\n            int temp = arr[i];\n            arr[i] = arr[correct];\n            arr[correct] = temp;\n        } else i++;\n    }\n}",
+      js: "function cyclicSort(arr) {\n  let i = 0;\n  while (i < arr.length) {\n    const correct = arr[i] - 1;\n    if (arr[i] !== arr[correct]) {\n      [arr[i], arr[correct]] = [arr[correct], arr[i]];\n    } else i++;\n  }\n  return arr;\n}",
     },
-    interviewPoints: [
-      "Preprocessing: O(n).",
-      "Each range sum query: O(1).",
-      "Space: O(n) for the prefix array.",
-      "Be careful with zero-based indexing.",
-    ],
+    interviewPoints: ["Works when elements belong to a known range.", "Standard cyclic sort takes O(N).", "Auxiliary space is O(1).", "Avoid invalid index access."],
   },
   {
-    id: "difference-array",
-    title: "8. Difference Array",
-    category: "Beginner",
+    id: "recursion",
+    title: "21. Recursion",
+    category: "Advanced",
     difficulty: "Medium",
-    icon: "➖",
-    shortDesc: "Range updates, cumulative operations.",
-    tutorialLink: "https://www.geeksforgeeks.org/difference-array-range-update-query-o1/",
+    icon: "🌀",
+    shortDesc: "Base cases, recursive calls, call stack.",
+    tutorialLink: "https://www.geeksforgeeks.org/introduction-to-recursion-2/",
     theory: `### 1. Core Concepts
-A Difference Array is an optimization technique used to perform multiple range updates efficiently.
-- **Difference array construction**
-- **Range increment**
-- **Range decrement**
-- **Boundary updates**
-- **Reconstructing original array**
-- **Prefix sum relationship**
-- **Multiple range queries**
+- Recursive Function: Calls itself.
+- Base Case: Stops recursion.
+- Recursive Case: Smaller subproblem.
+- Call Stack: Stores active function calls.
+- Tail Recursion: Recursive call is last operation.
 
-### 2. Code Implementation
-\`\`\`python
-arr = [1, 2, 3, 4, 5]
-diff = [0] * (len(arr) + 1)
-
-# Add 10 to indices 1 through 3
-left, right = 1, 3
-value = 10
-diff[left] += value
-diff[right + 1] -= value
-
-result = []
-current = 0
-for i in range(len(arr)):
-    current += diff[i]
-    result.append(arr[i] + current)
-print(result)
-\`\`\``,
+### 2. How It Works
+Factorial of 5:
+5 * factorial(4)
+    4 * factorial(3)
+        3 * factorial(2)
+            2 * factorial(1)
+                1`,
     complexity: [
-      { op: "Range Update", time: "O(1)", space: "O(1)" },
-      { op: "Reconstruction", time: "O(N)", space: "O(N)" },
+      { op: "Factorial", time: "O(N)", space: "O(N)" },
+      { op: "Fibonacci (naive)", time: "O(2^N)", space: "O(N)" },
     ],
     problems: {
-      Easy: ["Construct a difference array.", "Apply one range update."],
-      Medium: ["Apply multiple range updates.", "Range addition queries.", "Flight bookings range updates."],
-      Hard: ["Maximum element after multiple range updates.", "Minimum operations for range modifications."],
+      Easy: ["Print 1 to N.", "Factorial.", "Sum of N numbers.", "Reverse a string."],
+      Medium: ["Fibonacci.", "Sum of digits.", "Palindrome check.", "Binary numbers."],
+      Hard: ["Tower of Hanoi.", "All subsequences.", "Recursive multiplication.", "Recursive binary search."],
     },
     codeExamples: {
-      python: "arr = [1, 2, 3, 4, 5]\ndiff = [0] * (len(arr) + 1)\ndiff[1] += 10\ndiff[4] -= 10\nres, cur = [], 0\nfor i in range(len(arr)):\n    cur += diff[i]\n    res.append(arr[i] + cur)\nprint(res)",
-      cpp: "int arr[] = {1, 2, 3, 4, 5};\nint n = 5;\nint diff[n+1] = {0};\ndiff[1] += 10;\ndiff[4] -= 10;\nint cur = 0;\nfor(int i=0; i<n; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
-      java: "int[] arr = {1, 2, 3, 4, 5};\nint[] diff = new int[arr.length + 1];\ndiff[1] += 10;\ndiff[4] -= 10;\nint cur = 0;\nfor (int i = 0; i < arr.length; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
-      js: "const arr = [1, 2, 3, 4, 5];\nconst diff = new Array(arr.length + 1).fill(0);\ndiff[1] += 10;\ndiff[4] -= 10;\nlet cur = 0;\nfor (let i = 0; i < arr.length; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
+      python: "def factorial(n):\n    if n == 0 or n == 1: return 1\n    return n * factorial(n - 1)\n\ndef fibonacci(n):\n    if n <= 1: return n\n    return fibonacci(n - 1) + fibonacci(n - 2)",
+      cpp: "int factorial(int n) {\n    if (n == 0 || n == 1) return 1;\n    return n * factorial(n - 1);\n}",
+      java: "int factorial(int n) {\n    if (n == 0 || n == 1) return 1;\n    return n * factorial(n - 1);\n}",
+      js: "function factorial(n) {\n  if (n === 0 || n === 1) return 1;\n  return n * factorial(n - 1);\n}",
     },
-    interviewPoints: [
-      "Useful when many range updates are required.",
-      "Each update takes O(1).",
-      "Reconstructing the array takes O(n).",
-      "Difference arrays are closely related to prefix sums.",
+    interviewPoints: ["Every recursive function needs a base case.", "Understand the call stack.", "Excessive recursion can cause stack overflow.", "Understand tail recursion."],
+  },
+  {
+    id: "backtracking",
+    title: "22. Backtracking",
+    category: "Advanced",
+    difficulty: "Hard",
+    icon: "↩️",
+    shortDesc: "Subsets, permutations, N-Queens.",
+    tutorialLink: "https://www.geeksforgeeks.org/backtracking-algorithms/",
+    theory: `### 1. Core Concepts
+- Decision Tree.
+- Choose → Explore → Undo.
+- Pruning invalid branches.
+- Subsets / Permutations / Combinations.
+
+### 2. How It Works
+Subsets of [1, 2]: [], [1], [2], [1, 2]
+
+### 3. Code Implementation
+\`\`\`python
+def subsets(arr):
+    res = []
+    def backtrack(index, current):
+        if index == len(arr):
+            res.append(current.copy())
+            return
+        current.append(arr[index])
+        backtrack(index + 1, current)
+        current.pop()
+        backtrack(index + 1, current)
+    backtrack(0, [])
+    return res
+\`\`\``,
+    complexity: [
+      { op: "Subsets", time: "O(N * 2^N)", space: "O(N)" },
+      { op: "Permutations", time: "O(N * N!)", space: "O(N)" },
     ],
+    problems: {
+      Easy: ["Generate Subsets.", "Letter Case Permutation."],
+      Medium: ["Permutations.", "Combination Sum.", "Generate Parentheses.", "Palindrome Partitioning."],
+      Hard: ["N-Queens.", "Sudoku Solver.", "Word Break II.", "Expression Add Operators."],
+    },
+    codeExamples: {
+      python: "def subsets(arr):\n    res = []\n    def backtrack(index, current):\n        if index == len(arr):\n            res.append(current.copy())\n            return\n        current.append(arr[index])\n        backtrack(index + 1, current)\n        current.pop()\n        backtrack(index + 1, current)\n    backtrack(0, [])\n    return res",
+      cpp: "void backtrack(vector<int>& arr, int idx, vector<int>& curr, vector<vector<int>>& res) {\n    if (idx == arr.size()) { res.push_back(curr); return; }\n    curr.push_back(arr[idx]);\n    backtrack(arr, idx + 1, curr, res);\n    curr.pop_back();\n    backtrack(arr, idx + 1, curr, res);\n}",
+      java: "void backtrack(int[] arr, int idx, List<Integer> curr, List<List<Integer>> res) {\n    if (idx == arr.length) { res.add(new ArrayList<>(curr)); return; }\n    curr.add(arr[idx]);\n    backtrack(arr, idx + 1, curr, res);\n    curr.remove(curr.size() - 1);\n    backtrack(arr, idx + 1, curr, res);\n}",
+      js: "function subsets(arr) {\n  const res = [];\n  function backtrack(idx, curr) {\n    if (idx === arr.length) { res.push([...curr]); return; }\n    curr.push(arr[idx]);\n    backtrack(idx + 1, curr);\n    curr.pop();\n    backtrack(idx + 1, curr);\n  }\n  backtrack(0, []);\n  return res;\n}",
+    },
+    interviewPoints: ["Use recursion to explore choices.", "Always undo changes.", "Pruning avoids unnecessary exploration.", "Exponential time complexity."],
+  },
+  {
+    id: "tree-dfs",
+    title: "23. Tree DFS",
+    category: "Advanced",
+    difficulty: "Medium",
+    icon: "🌳",
+    shortDesc: "Preorder, inorder, postorder traversal.",
+    tutorialLink: "https://www.geeksforgeeks.org/tree-traversals-inorder-preorder-and-postorder/",
+    theory: `### 1. Core Concepts
+- Preorder: Root → Left → Right.
+- Inorder: Left → Root → Right.
+- Postorder: Left → Right → Root.
+- Recursive DFS vs Iterative DFS.
+
+### 2. How It Works
+Tree: 1 (L:2 (L:4, R:5), R:3)
+- Preorder: 1, 2, 4, 5, 3
+- Inorder: 4, 2, 5, 1, 3
+- Postorder: 4, 5, 2, 3, 1`,
+    complexity: [{ op: "Tree traversal", time: "O(N)", space: "O(H)" }],
+    problems: {
+      Easy: ["Inorder/Preorder/Postorder Traversal.", "Maximum Depth.", "Same Tree."],
+      Medium: ["Path Sum.", "Diameter.", "LCA.", "Right Side View."],
+      Hard: ["Maximum Path Sum.", "Serialize/Deserialize.", "Vertical Order Traversal."],
+    },
+    codeExamples: {
+      python: "def preorder(root):\n    if not root: return\n    print(root.val)\n    preorder(root.left)\n    preorder(root.right)\n\ndef inorder(root):\n    if not root: return\n    inorder(root.left)\n    print(root.val)\n    inorder(root.right)",
+      cpp: "void inorder(TreeNode* root) {\n    if (!root) return;\n    inorder(root->left);\n    cout << root->val;\n    inorder(root->right);\n}",
+      java: "void inorder(TreeNode root) {\n    if (root == null) return;\n    inorder(root.left);\n    System.out.print(root.val);\n    inorder(root.right);\n}",
+      js: "function inorder(root) {\n  if (!root) return;\n  inorder(root.left);\n  console.log(root.val);\n  inorder(root.right);\n}",
+    },
+    interviewPoints: ["Preorder visits root first.", "Inorder visits root between subtrees.", "Postorder visits root last.", "Inorder of BST gives sorted order."],
+  },
+  {
+    id: "tree-bfs",
+    title: "24. Tree BFS",
+    category: "Advanced",
+    difficulty: "Medium",
+    icon: "🌲",
+    shortDesc: "Level order traversal.",
+    tutorialLink: "https://www.geeksforgeeks.org/level-order-tree-traversal/",
+    theory: `### 1. Core Concepts
+- Level Order traversal.
+- Uses Queue.
+- Zigzag Traversal.
+- Left/Right View.
+
+### 2. How It Works
+Tree: 1 (L:2 (L:4, R:5), R:3 (R:6))
+- Level 0: 1
+- Level 1: 2, 3
+- Level 2: 4, 5, 6`,
+    complexity: [{ op: "Traversal", time: "O(N)", space: "O(W)" }],
+    problems: {
+      Easy: ["Level Order Traversal.", "Maximum Depth.", "Minimum Depth.", "Average of Levels."],
+      Medium: ["Zigzag Level Order.", "Right Side View.", "Next Right Pointers."],
+      Hard: ["Vertical Order Traversal.", "Maximum Width.", "Serialize/Deserialize."],
+    },
+    codeExamples: {
+      python: "from collections import deque\ndef level_order(root):\n    if not root: return []\n    q, res = deque([root]), []\n    while q:\n        node = q.popleft()\n        res.append(node.val)\n        if node.left: q.append(node.left)\n        if node.right: q.append(node.right)\n    return res",
+      cpp: "vector<int> levelOrder(TreeNode* root) {\n    if (!root) return {};\n    queue<TreeNode*> q; q.push(root);\n    vector<int> res;\n    while (!q.empty()) {\n        TreeNode* node = q.front(); q.pop();\n        res.push_back(node->val);\n        if (node->left) q.push(node->left);\n        if (node->right) q.push(node->right);\n    }\n    return res;\n}",
+      java: "List<Integer> levelOrder(TreeNode root) {\n    List<Integer> res = new ArrayList<>();\n    if (root == null) return res;\n    Queue<TreeNode> q = new LinkedList<>();\n    q.offer(root);\n    while (!q.isEmpty()) {\n        TreeNode node = q.poll();\n        res.add(node.val);\n        if (node.left != null) q.offer(node.left);\n        if (node.right != null) q.offer(node.right);\n    }\n    return res;\n}",
+      js: "function levelOrder(root) {\n  if (!root) return [];\n  const q = [root], res = [];\n  while (q.length) {\n    const node = q.shift();\n    res.push(node.val);\n    if (node.left) q.push(node.left);\n    if (node.right) q.push(node.right);\n  }\n  return res;\n}",
+    },
+    interviewPoints: ["BFS uses a queue.", "Queue space can reach O(N).", "Use `deque` in Python.", "BFS finds shortest paths in unweighted graphs."],
+  },
+  {
+    id: "binary-search-tree",
+    title: "25. Binary Search Tree",
+    category: "Advanced",
+    difficulty: "Medium",
+    icon: "🔎",
+    shortDesc: "Search, insert, delete in O(log N).",
+    tutorialLink: "https://www.geeksforgeeks.org/binary-search-tree-data-structure/",
+    theory: `### 1. Core Concepts
+- Left subtree < Root < Right subtree.
+- Search / Insertion / Deletion.
+- Min = leftmost, Max = rightmost.
+- Inorder traversal gives sorted values.
+- Balanced BST height ~ log N.
+
+### 2. BST Visualization
+\`\`\`
+      50
+     /  \\
+    30   70
+   / \\   / \\
+  20 40 60 80
+\`\`\`
+For node 50: Left = 20,30,40. Right = 60,70,80.`,
+    complexity: [
+      { op: "Search (Avg)", time: "O(log N)", space: "O(1)" },
+      { op: "Insert (Avg)", time: "O(log N)", space: "O(1)" },
+      { op: "Delete (Avg)", time: "O(log N)", space: "O(1)" },
+      { op: "Search (Worst)", time: "O(N)", space: "O(1)" },
+    ],
+    problems: {
+      Easy: ["Search in a BST.", "Insert into a BST.", "Min Distance Nodes.", "Range Sum of BST."],
+      Medium: ["Validate BST.", "Delete Node in a BST.", "Kth Smallest.", "LCA of BST.", "Sorted Array to BST."],
+      Hard: ["Recover BST.", "Serialize and Deserialize BST.", "Largest BST Subtree."],
+    },
+    codeExamples: {
+      python: "def insert(root, val):\n    if not root: return TreeNode(val)\n    if val < root.val: root.left = insert(root.left, val)\n    else: root.right = insert(root.right, val)\n    return root\n\ndef search(root, target):\n    if not root or root.val == target: return root\n    if target < root.val: return search(root.left, target)\n    return search(root.right, target)",
+      cpp: "TreeNode* insert(TreeNode* root, int val) {\n    if (!root) return new TreeNode(val);\n    if (val < root->val) root->left = insert(root->left, val);\n    else root->right = insert(root->right, val);\n    return root;\n}",
+      java: "TreeNode insert(TreeNode root, int val) {\n    if (root == null) return new TreeNode(val);\n    if (val < root.val) root.left = insert(root.left, val);\n    else root.right = insert(root.right, val);\n    return root;\n}",
+      js: "function insert(root, val) {\n  if (!root) return new TreeNode(val);\n  if (val < root.val) root.left = insert(root.left, val);\n  else root.right = insert(root.right, val);\n  return root;\n}",
+    },
+    interviewPoints: ["BST ordering property.", "Inorder gives sorted values.", "Skewed BST = O(N).", "Deletion: 3 cases (leaf, one child, two children)."],
   }
 ];

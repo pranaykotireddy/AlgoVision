@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import EditorPanel from "../components/EditorPanel";
 import OutputPanel from "../components/OutputPanel";
 import ChatPanel from "../components/ChatPanel";
 import { LANGUAGES } from "../data/languages";
 import { runCode } from "../utils/runCode";
-import { FaPlay, FaTrash } from "react-icons/fa";
+import { FaPlay, FaTrash, FaCube } from "react-icons/fa";
 
 export default function Playground() {
+  const navigate = useNavigate();
   const [language, setLanguage] = useState(LANGUAGES[0]);
   const [code, setCode] = useState(LANGUAGES[0].defaultCode);
   const [stdin, setStdin] = useState("");
@@ -38,6 +40,11 @@ export default function Playground() {
     setStdin("");
   };
 
+  // 🔥 REDIRECT TO VISUALIZER WITH CODE
+  const handleVisualize = () => {
+    navigate("/visualizer", { state: { code } });
+  };
+
   return (
     <div className="pt-24 px-6 pb-6 max-w-[1800px] mx-auto">
       <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
@@ -51,6 +58,13 @@ export default function Playground() {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={handleVisualize}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-accent2/50 text-accent2 hover:bg-accent2/10 text-sm transition-all"
+          >
+            <FaCube /> Visualize
+          </button>
+
           <button
             onClick={handleClear}
             className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/20 hover:bg-white/5 text-sm transition-all"
