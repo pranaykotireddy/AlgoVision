@@ -1,103 +1,166 @@
 export const TOPICS_3 = [
   {
-    id: "heaps",
-    title: "Heaps and Priority Queues",
-    category: "Linear",
+    id: "sliding-window",
+    title: "6. Sliding Window",
+    category: "Beginner",
     difficulty: "Medium",
-    icon: "⛰️",
-    shortDesc: "Min/Max Heap, Top K, Median of Stream.",
-    explanation: "Complete binary tree with heap property.\n\n• Min-Heap / Max-Heap\n• Heapify: O(n) build\n• Insert/Delete: O(log n)\n• Kth largest/smallest\n• Top K Frequent\n• Merge K Sorted Lists\n• Median from Data Stream",
+    icon: "🪟",
+    shortDesc: "Fixed window, variable window.",
+    tutorialLink: "https://www.geeksforgeeks.org/window-sliding-technique/",
+    theory: `### 1. Core Concepts
+Sliding Window maintains a continuous section of an array or string and moves that section to solve problems efficiently.
+- **Fixed-size window**
+- **Variable-size window**
+- **Window expansion**
+- **Window contraction**
+- **Left and right boundaries**
+- **Window sum**
+- **Window frequency**
+- **Maximum/minimum subarray**
+- **Longest substring problems**
+
+### 2. Code Implementation (Max Sum of K)
+\`\`\`python
+arr = [2, 1, 5, 1, 3, 2]
+k = 3
+window_sum = sum(arr[:k])
+maximum = window_sum
+for i in range(k, len(arr)):
+    window_sum += arr[i]
+    window_sum -= arr[i-k]
+    maximum = max(maximum, window_sum)
+print(maximum)
+\`\`\``,
+    complexity: [
+      { op: "Time Complexity", time: "O(N)", space: "O(1)" },
+    ],
+    problems: {
+      Easy: ["Maximum sum of K consecutive elements.", "Average of every window of size K."],
+      Medium: ["Longest substring without repeating characters.", "Minimum Size Subarray Sum.", "Maximum number of vowels in a substring."],
+      Hard: ["Sliding Window Maximum.", "Minimum Window Substring.", "Longest substring with at most K distinct characters."],
+    },
     codeExamples: {
-      python: "import heapq\n\ndef kth_largest(nums, k):\n    return heapq.nlargest(k, nums)[-1]\n\n# Or use min-heap of size k",
-      cpp: "int kthLargest(vector<int>& nums, int k) {\n    priority_queue<int, vector<int>, greater<int>> pq;\n    for (int n : nums) {\n        pq.push(n);\n        if (pq.size() > k) pq.pop();\n    }\n    return pq.top();\n}",
-      java: "int kthLargest(int[] nums, int k) {\n    PriorityQueue<Integer> pq = new PriorityQueue<>();\n    for (int n : nums) {\n        pq.offer(n);\n        if (pq.size() > k) pq.poll();\n    }\n    return pq.peek();\n}",
-      js: "function kthLargest(nums, k) {\n  nums.sort((a, b) => b - a);\n  return nums[k - 1];\n}",
+      python: "arr = [2, 1, 5, 1, 3, 2]\nk = 3\nwindow_sum = sum(arr[:k])\nmaximum = window_sum\nfor i in range(k, len(arr)):\n    window_sum += arr[i] - arr[i-k]\n    maximum = max(maximum, window_sum)\nprint(maximum)",
+      cpp: "int arr[] = {2, 1, 5, 1, 3, 2};\nint k = 3, n = 6;\nint windowSum = 0;\nfor(int i=0; i<k; i++) windowSum += arr[i];\nint maxSum = windowSum;\nfor(int i=k; i<n; i++) {\n    windowSum += arr[i] - arr[i-k];\n    maxSum = max(maxSum, windowSum);\n}",
+      java: "int[] arr = {2, 1, 5, 1, 3, 2};\nint k = 3;\nint windowSum = 0;\nfor (int i = 0; i < k; i++) windowSum += arr[i];\nint maxSum = windowSum;\nfor (int i = k; i < arr.length; i++) {\n    windowSum += arr[i] - arr[i - k];\n    maxSum = Math.max(maxSum, windowSum);\n}",
+      js: "const arr = [2, 1, 5, 1, 3, 2];\nconst k = 3;\nlet windowSum = 0;\nfor (let i = 0; i < k; i++) windowSum += arr[i];\nlet maxSum = windowSum;\nfor (let i = k; i < arr.length; i++) {\n    windowSum += arr[i] - arr[i - k];\n    maxSum = Math.max(maxSum, windowSum);\n}",
     },
     interviewPoints: [
-      "Top K Largest: use min-heap of size K.",
-      "Median of stream: max-heap for left half, min-heap for right half.",
-      "Heapify builds heap in O(n), not O(n log n).",
+      "Fixed window: window size stays constant.",
+      "Variable window: window size changes according to conditions.",
+      "Many problems improve from O(n × k) to O(n).",
+      "Sliding window generally works on contiguous ranges.",
     ],
   },
   {
-    id: "greedy",
-    title: "Greedy Algorithms",
-    category: "Technique",
+    id: "prefix-sum",
+    title: "7. Prefix Sum",
+    category: "Beginner",
     difficulty: "Medium",
-    icon: "🎁",
-    shortDesc: "Activity selection, Intervals, Jump Game.",
-    explanation: "Make locally optimal choices.\n\nClassic problems:\n• Activity Selection\n• Fractional Knapsack\n• Job Sequencing\n• Meeting Rooms\n• Merge Intervals\n• Jump Game\n• Gas Station\n• Huffman Coding",
+    icon: "➕",
+    shortDesc: "Prefix sum, suffix sum, range queries.",
+    tutorialLink: "https://www.geeksforgeeks.org/prefix-sum-array-implementation-applications-competitive-programming/",
+    theory: `### 1. Core Concepts
+Prefix Sum is a technique that stores cumulative sums to answer range-sum queries efficiently.
+- **Prefix sum array**
+- **Cumulative sum**
+- **Range sum queries**
+- **Suffix sum**
+- **2D prefix sum**
+- **Prefix XOR**
+- **Subarray sum**
+- **Prefix sum with HashMap**
+
+### 2. Code Implementation
+\`\`\`python
+arr = [2, 4, 6, 8, 10]
+prefix = [0]
+for num in arr:
+    prefix.append(prefix[-1] + num)
+
+# Sum from index 1 to 3
+left = 1
+right = 3
+print(prefix[right + 1] - prefix[left])
+\`\`\``,
+    complexity: [
+      { op: "Preprocessing", time: "O(N)", space: "O(N)" },
+      { op: "Range Query", time: "O(1)", space: "O(1)" },
+    ],
+    problems: {
+      Easy: ["Build a prefix sum array.", "Find running sum.", "Range sum query."],
+      Medium: ["Subarray Sum Equals K.", "Equilibrium Point.", "Find pivot index."],
+      Hard: ["Count subarrays with a given sum.", "Maximum size subarray with sum K.", "2D range sum queries."],
+    },
     codeExamples: {
-      python: "def max_meetings(intervals):\n    intervals.sort(key=lambda x: x[1])\n    count, end = 0, 0\n    for s, e in intervals:\n        if s >= end:\n            count += 1\n            end = e\n    return count",
-      cpp: "int maxMeetings(vector<pair<int,int>>& ints) {\n    sort(ints.begin(), ints.end(),\n         [](auto& a, auto& b){ return a.second < b.second; });\n    int c = 0, end = 0;\n    for (auto& [s, e] : ints)\n        if (s >= end) { c++; end = e; }\n    return c;\n}",
-      java: "int maxMeetings(int[][] ints) {\n    Arrays.sort(ints, (a, b) -> a[1] - b[1]);\n    int c = 0, end = 0;\n    for (int[] iv : ints)\n        if (iv[0] >= end) { c++; end = iv[1]; }\n    return c;\n}",
-      js: "function maxMeetings(intervals) {\n  intervals.sort((a, b) => a[1] - b[1]);\n  let c = 0, end = 0;\n  for (const [s, e] of intervals) {\n    if (s >= end) { c++; end = e; }\n  }\n  return c;\n}",
+      python: "arr = [2, 4, 6, 8, 10]\nprefix = [0]\nfor num in arr: prefix.append(prefix[-1] + num)\nprint(prefix[4] - prefix[1])",
+      cpp: "int arr[] = {2, 4, 6, 8, 10};\nint n = 5;\nint prefix[n+1];\nprefix[0] = 0;\nfor(int i=0; i<n; i++) prefix[i+1] = prefix[i] + arr[i];\ncout << prefix[4] - prefix[1];",
+      java: "int[] arr = {2, 4, 6, 8, 10};\nint[] prefix = new int[arr.length + 1];\nfor (int i = 0; i < arr.length; i++) prefix[i+1] = prefix[i] + arr[i];\nSystem.out.println(prefix[4] - prefix[1]);",
+      js: "const arr = [2, 4, 6, 8, 10];\nconst prefix = [0];\nfor (let i = 0; i < arr.length; i++) prefix.push(prefix[i] + arr[i]);\nconsole.log(prefix[4] - prefix[1]);",
     },
     interviewPoints: [
-      "Interval scheduling: sort by end time.",
-      "Merge intervals: sort by start time.",
-      "Greedy doesn't always work — 0/1 Knapsack needs DP.",
+      "Preprocessing: O(n).",
+      "Each range sum query: O(1).",
+      "Space: O(n) for the prefix array.",
+      "Be careful with zero-based indexing.",
     ],
   },
   {
-    id: "two-pointers-sliding-window",
-    title: "Two Pointers & Sliding Window",
-    category: "Technique",
+    id: "difference-array",
+    title: "8. Difference Array",
+    category: "Beginner",
     difficulty: "Medium",
-    icon: "👉👈",
-    shortDesc: "Pair sums, window max, longest substring.",
-    explanation: "Two pointers: move pointers inward or together.\n\nSliding window: maintain a 'window' over array/string.\n\nPatterns:\n• Pair sum (sorted)\n• Three Sum\n• Container with most water\n• Longest substring without repeats\n• Min window substring\n• Max sum of size K\n• Longest repeating char replacement",
-    codeExamples: {
-      python: "def length_of_longest(s):\n    seen, left, mx = {}, 0, 0\n    for r, c in enumerate(s):\n        if c in seen and seen[c] >= left:\n            left = seen[c] + 1\n        seen[c] = r\n        mx = max(mx, r - left + 1)\n    return mx",
-      cpp: "int longestSubstring(string s) {\n    unordered_map<char,int> seen;\n    int l = 0, mx = 0;\n    for (int r = 0; r < s.size(); r++) {\n        if (seen.count(s[r]) && seen[s[r]] >= l) l = seen[s[r]] + 1;\n        seen[s[r]] = r;\n        mx = max(mx, r - l + 1);\n    }\n    return mx;\n}",
-      java: "int longestSubstring(String s) {\n    Map<Character,Integer> seen = new HashMap<>();\n    int l = 0, mx = 0;\n    for (int r = 0; r < s.length(); r++) {\n        char c = s.charAt(r);\n        if (seen.containsKey(c) && seen.get(c) >= l) l = seen.get(c) + 1;\n        seen.put(c, r);\n        mx = Math.max(mx, r - l + 1);\n    }\n    return mx;\n}",
-      js: "function longestSubstring(s) {\n  const seen = new Map();\n  let l = 0, mx = 0;\n  for (let r = 0; r < s.length; r++) {\n    const c = s[r];\n    if (seen.has(c) && seen.get(c) >= l) l = seen.get(c) + 1;\n    seen.set(c, r);\n    mx = Math.max(mx, r - l + 1);\n  }\n  return mx;\n}",
-    },
-    interviewPoints: [
-      "Longest substring uses sliding window + hashmap.",
-      "Container with most water: always move the shorter pointer.",
-      "Three Sum: sort, fix one, two pointers.",
+    icon: "➖",
+    shortDesc: "Range updates, cumulative operations.",
+    tutorialLink: "https://www.geeksforgeeks.org/difference-array-range-update-query-o1/",
+    theory: `### 1. Core Concepts
+A Difference Array is an optimization technique used to perform multiple range updates efficiently.
+- **Difference array construction**
+- **Range increment**
+- **Range decrement**
+- **Boundary updates**
+- **Reconstructing original array**
+- **Prefix sum relationship**
+- **Multiple range queries**
+
+### 2. Code Implementation
+\`\`\`python
+arr = [1, 2, 3, 4, 5]
+diff = [0] * (len(arr) + 1)
+
+# Add 10 to indices 1 through 3
+left, right = 1, 3
+value = 10
+diff[left] += value
+diff[right + 1] -= value
+
+result = []
+current = 0
+for i in range(len(arr)):
+    current += diff[i]
+    result.append(arr[i] + current)
+print(result)
+\`\`\``,
+    complexity: [
+      { op: "Range Update", time: "O(1)", space: "O(1)" },
+      { op: "Reconstruction", time: "O(N)", space: "O(N)" },
     ],
-  },
-  {
-    id: "graphs",
-    title: "Graphs",
-    category: "Non-linear",
-    difficulty: "Hard",
-    icon: "🕸️",
-    shortDesc: "BFS, DFS, Dijkstra, Topological Sort.",
-    explanation: "Nodes + Edges.\n\nRepresentations:\n• Adjacency List (common)\n• Adjacency Matrix (dense graphs)\n\nAlgorithms:\n• BFS (shortest path in unweighted)\n• DFS (connected components, cycle detection)\n• Dijkstra (shortest path, non-negative)\n• Bellman-Ford (negative edges)\n• Floyd-Warshall (all pairs)\n• Topological Sort (Kahn's)\n• Union-Find (Disjoint Set)\n• Kruskal / Prim (MST)",
+    problems: {
+      Easy: ["Construct a difference array.", "Apply one range update."],
+      Medium: ["Apply multiple range updates.", "Range addition queries.", "Flight bookings range updates."],
+      Hard: ["Maximum element after multiple range updates.", "Minimum operations for range modifications."],
+    },
     codeExamples: {
-      python: "from collections import deque\n\ndef bfs(graph, start):\n    seen, q = set(), deque([start])\n    while q:\n        node = q.popleft()\n        if node in seen: continue\n        seen.add(node)\n        for nb in graph[node]: q.append(nb)\n    return seen",
-      cpp: "void bfs(vector<vector<int>>& g, int start) {\n    vector<bool> seen(g.size(), false);\n    queue<int> q; q.push(start);\n    while (!q.empty()) {\n        int n = q.front(); q.pop();\n        if (seen[n]) continue;\n        seen[n] = true;\n        for (int nb : g[n]) q.push(nb);\n    }\n}",
-      java: "void bfs(List<List<Integer>> g, int start) {\n    boolean[] seen = new boolean[g.size()];\n    Queue<Integer> q = new LinkedList<>();\n    q.offer(start);\n    while (!q.isEmpty()) {\n        int n = q.poll();\n        if (seen[n]) continue;\n        seen[n] = true;\n        for (int nb : g.get(n)) q.offer(nb);\n    }\n}",
-      js: "function bfs(graph, start) {\n  const seen = new Set();\n  const q = [start];\n  while (q.length) {\n    const node = q.shift();\n    if (seen.has(node)) continue;\n    seen.add(node);\n    for (const nb of graph[node]) q.push(nb);\n  }\n  return seen;\n}",
+      python: "arr = [1, 2, 3, 4, 5]\ndiff = [0] * (len(arr) + 1)\ndiff[1] += 10\ndiff[4] -= 10\nres, cur = [], 0\nfor i in range(len(arr)):\n    cur += diff[i]\n    res.append(arr[i] + cur)\nprint(res)",
+      cpp: "int arr[] = {1, 2, 3, 4, 5};\nint n = 5;\nint diff[n+1] = {0};\ndiff[1] += 10;\ndiff[4] -= 10;\nint cur = 0;\nfor(int i=0; i<n; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
+      java: "int[] arr = {1, 2, 3, 4, 5};\nint[] diff = new int[arr.length + 1];\ndiff[1] += 10;\ndiff[4] -= 10;\nint cur = 0;\nfor (int i = 0; i < arr.length; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
+      js: "const arr = [1, 2, 3, 4, 5];\nconst diff = new Array(arr.length + 1).fill(0);\ndiff[1] += 10;\ndiff[4] -= 10;\nlet cur = 0;\nfor (let i = 0; i < arr.length; i++) {\n    cur += diff[i];\n    arr[i] += cur;\n}",
     },
     interviewPoints: [
-      "BFS = shortest path in unweighted graphs.",
-      "DFS = connected components, cycle detection.",
-      "Topological sort only works on DAGs (Directed Acyclic Graph).",
-    ],
-  },
-  {
-    id: "dynamic-programming",
-    title: "Dynamic Programming",
-    category: "Technique",
-    difficulty: "Hard",
-    icon: "🧩",
-    shortDesc: "1D/2D DP, Knapsack, LCS, LIS.",
-    explanation: "Break into overlapping subproblems, cache results.\n\nPatterns:\n• 1D DP: Climbing stairs, House robber\n• 2D DP: Grid paths\n• Knapsack: 0/1, Unbounded\n• Coin Change\n• Subset Sum\n• LCS (Longest Common Subsequence)\n• LIS (Longest Increasing Subsequence)\n• Edit Distance\n• DP on Trees, DP on Bitmasks",
-    codeExamples: {
-      python: "def climb_stairs(n):\n    if n <= 2: return n\n    a, b = 1, 2\n    for _ in range(3, n + 1):\n        a, b = b, a + b\n    return b",
-      cpp: "int climbStairs(int n) {\n    if (n <= 2) return n;\n    int a = 1, b = 2;\n    for (int i = 3; i <= n; i++) {\n        int c = a + b; a = b; b = c;\n    }\n    return b;\n}",
-      java: "int climbStairs(int n) {\n    if (n <= 2) return n;\n    int a = 1, b = 2;\n    for (int i = 3; i <= n; i++) {\n        int c = a + b; a = b; b = c;\n    }\n    return b;\n}",
-      js: "function climbStairs(n) {\n  if (n <= 2) return n;\n  let a = 1, b = 2;\n  for (let i = 3; i <= n; i++) {\n    [a, b] = [b, a + b];\n  }\n  return b;\n}",
-    },
-    interviewPoints: [
-      "Start with recursion + memoization, then tabulate.",
-      "0/1 Knapsack: iterate weights backwards to avoid reuse.",
-      "LCS: 2D DP table, compare characters.",
-      "Optimize space when DP[i] only depends on DP[i-1].",
+      "Useful when many range updates are required.",
+      "Each update takes O(1).",
+      "Reconstructing the array takes O(n).",
+      "Difference arrays are closely related to prefix sums.",
     ],
   }
 ];

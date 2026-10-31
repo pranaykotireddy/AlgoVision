@@ -1,103 +1,275 @@
 export const TOPICS_1 = [
   {
-    id: "fundamentals",
-    title: "Programming Fundamentals",
-    category: "Basics",
+    id: "basic-programming",
+    title: "1. Basic Programming",
+    category: "Beginner",
     difficulty: "Easy",
     icon: "💻",
-    shortDesc: "Variables, loops, functions, and Big O notation.",
-    explanation: "Before DSA, master the basics:\n\n• Variables & Data Types (int, string, float, bool)\n• Input/Output\n• Operators (+, -, *, /, %)\n• Conditionals (if/else)\n• Loops (for/while)\n• Functions (parameters, return values)\n• Recursion basics\n• Time & Space Complexity (Big O, Omega, Theta)",
+    shortDesc: "Learn the fundamental concepts required to write programs.",
+    tutorialLink: "https://www.geeksforgeeks.org/dsa/programming-tutorial/",
+    theory: `### 1. Core Concepts
+- **Programming**: Giving instructions to a computer to perform tasks.
+- **Variables**: Named memory locations used to store values.
+- **Data Types**: Define the type of data (integer, string, Boolean).
+- **Operators**: Perform arithmetic, comparison, and logical operations.
+- **Conditional Statements**: Execute code based on conditions (if, else, elif).
+- **Loops**: Repeat instructions using \`for\` and \`while\`.
+- **Functions**: Reusable blocks of code that perform specific tasks.
+- **Recursion**: A function calling itself to solve smaller subproblems.
+- **Input/Output**: Read user input and display results.
+- **Type Conversion**: Convert values from one data type to another.
+
+### 2. Important Concepts to Understand
+**Variables:**
+\`\`\`python
+name = "Pranay"
+age = 20
+marks = 85.5
+print(name, age)
+\`\`\`
+
+**Conditional Statements:**
+\`\`\`python
+number = 10
+if number > 0:
+    print("Positive")
+elif number < 0:
+    print("Negative")
+else:
+    print("Zero")
+\`\`\`
+
+**Loops:**
+\`\`\`python
+for i in range(1, 6):
+    print(i)
+\`\`\`
+
+**Functions:**
+\`\`\`python
+def add(a, b):
+    return a + b
+print(add(10, 20))
+\`\`\`
+
+**Recursion:**
+\`\`\`python
+def factorial(n):
+    if n == 0: # Base condition
+        return 1
+    return n * factorial(n - 1)
+print(factorial(5))
+\`\`\`
+
+### 3. Complexity Basics
+- Simple assignment: \`O(1)\`
+- Single loop: \`O(n)\`
+- Nested loops: Usually \`O(n²)\`
+- Binary search: \`O(log n)\`
+- Recursive factorial: \`O(n)\` time, \`O(n)\` stack space`,
+    complexity: [
+      { op: "Simple assignment", time: "O(1)", space: "O(1)" },
+      { op: "Single loop", time: "O(N)", space: "O(1)" },
+      { op: "Nested loops", time: "O(N²)", space: "O(1)" },
+    ],
+    problems: {
+      Easy: [
+        "Print numbers from 1 to N.",
+        "Find the sum of N natural numbers.",
+        "Check whether a number is even or odd.",
+        "Find the factorial of a number.",
+        "Reverse a number.",
+        "Find the sum of digits.",
+      ],
+      Medium: [
+        "Check whether a number is prime.",
+        "Generate the Fibonacci series.",
+        "Find GCD and LCM.",
+        "Check whether a number is an Armstrong number.",
+        "Check whether a number is a palindrome.",
+      ],
+      Hard: [
+        "Implement recursive binary exponentiation.",
+        "Generate all permutations of a string using recursion.",
+        "Solve the Tower of Hanoi problem.",
+      ],
+    },
     codeExamples: {
-      python: "def greet(name):\n    return f'Hello, {name}!'\n\nprint(greet('DSA'))",
-      cpp: "string greet(string name) {\n    return \"Hello, \" + name + \"!\";\n}\ncout << greet(\"DSA\");",
-      java: "String greet(String name) {\n    return \"Hello, \" + name + \"!\";\n}\nSystem.out.println(greet(\"DSA\"));",
-      js: "function greet(name) {\n  return `Hello, ${name}!`;\n}\nconsole.log(greet('DSA'));",
+      python: "name = 'Pranay'\nage = 20\nprint(name, age)\n\ndef add(a, b):\n    return a + b\nprint(add(10, 20))\n\ndef factorial(n):\n    if n == 0: return 1\n    return n * factorial(n - 1)\nprint(factorial(5))",
+      cpp: "#include <iostream>\nusing namespace std;\nint main() {\n    int age = 20;\n    cout << \"Age: \" << age << endl;\n    for (int i = 1; i <= 5; i++) cout << i << \" \";\n    return 0;\n}",
+      java: "public class Main {\n    public static void main(String[] args) {\n        int age = 20;\n        System.out.println(\"Age: \" + age);\n        for (int i = 1; i <= 5; i++) System.out.print(i + \" \");\n    }\n}",
+      js: "let name = 'Pranay';\nlet age = 20;\nconsole.log(name, age);\n\nfunction add(a, b) { return a + b; }\nconsole.log(add(10, 20));",
     },
     interviewPoints: [
-      "Always analyze time complexity before coding.",
-      "Big O ignores constants: O(2n) → O(n).",
-      "Nested loops usually mean O(n²).",
-      "Space complexity counts extra memory used.",
+      "Difference between `for` and `while` loops.",
+      "Difference between parameters and arguments.",
+      "What is recursion and what is a base condition?",
+      "Difference between iteration and recursion.",
+      "What is stack memory?",
+      "Difference between local and global variables.",
     ],
   },
   {
-    id: "arrays-strings",
-    title: "Arrays and Strings",
-    category: "Linear",
+    id: "array-traversal",
+    title: "2. Array Traversal",
+    category: "Beginner",
     difficulty: "Easy",
-    icon: "📊",
-    shortDesc: "Traversal, prefix sums, two pointers, Kadane's.",
-    explanation: "Arrays are contiguous memory; Strings are arrays of chars.\n\nKey patterns:\n• Traversal, insertion, deletion\n• Reverse array\n• Find max/min, second-largest\n• Prefix & Suffix sums\n• Two Pointers\n• Sliding Window\n• Kadane's Algorithm (max subarray)\n• Frequency counting\n• Anagrams & Palindromes",
+    icon: "🔁",
+    shortDesc: "Searching, insertion, deletion, traversal.",
+    tutorialLink: "https://www.geeksforgeeks.org/dsa/array-data-structure-guide/",
+    theory: `### 1. Core Concepts
+- **Array**: Collection of elements stored in indexed positions.
+- **Indexing**: Access elements using their positions.
+- **Traversal**: Visit each element one by one.
+- **Insertion**: Add an element at a particular position.
+- **Deletion**: Remove an element from an array.
+- **Searching**: Find an element in an array.
+- **Updating**: Change an existing element.
+- **Multidimensional Arrays**: Arrays containing rows and columns.
+- **Dynamic Arrays**: Arrays that can resize automatically.
+
+### 2. Code Implementations
+**Array Traversal:**
+\`\`\`python
+arr = [10, 20, 30, 40, 50]
+for i in range(len(arr)):
+    print(arr[i])
+\`\`\`
+
+**Find the Maximum Element:**
+\`\`\`python
+arr = [10, 45, 20, 80, 30]
+maximum = arr[0]
+for num in arr:
+    if num > maximum:
+        maximum = num
+print("Maximum:", maximum)
+\`\`\`
+
+**Linear Search:**
+\`\`\`python
+arr = [10, 20, 30, 40, 50]
+target = 30
+for i in range(len(arr)):
+    if arr[i] == target:
+        print("Found at index:", i)
+        break
+\`\`\``,
+    complexity: [
+      { op: "Array indexing", time: "O(1)", space: "O(1)" },
+      { op: "Linear search", time: "O(N)", space: "O(1)" },
+      { op: "Insert/Delete in middle", time: "O(N)", space: "O(1)" },
+    ],
+    problems: {
+      Easy: [
+        "Find the largest element.",
+        "Find the smallest element.",
+        "Calculate the sum of array elements.",
+        "Reverse an array.",
+        "Search for an element.",
+        "Count even and odd numbers.",
+      ],
+      Medium: [
+        "Find the second-largest element.",
+        "Remove duplicates from a sorted array.",
+        "Move all zeros to the end.",
+        "Rotate an array by K positions.",
+        "Find the missing number.",
+      ],
+      Hard: [
+        "Find the maximum product subarray.",
+        "Trapping Rain Water.",
+        "Merge two sorted arrays without extra space.",
+        "Find the median of two sorted arrays.",
+      ],
+    },
     codeExamples: {
-      python: "# Kadane's Algorithm\nnums = [-2,1,-3,4,-1,2,1,-5,4]\nmax_sum = curr = nums[0]\nfor n in nums[1:]:\n    curr = max(n, curr + n)\n    max_sum = max(max_sum, curr)\nprint(max_sum) # 6",
-      cpp: "int maxSubArray(vector<int>& nums) {\n    int maxSum = nums[0], curr = nums[0];\n    for (int i = 1; i < nums.size(); i++) {\n        curr = max(nums[i], curr + nums[i]);\n        maxSum = max(maxSum, curr);\n    }\n    return maxSum;\n}",
-      java: "int maxSubArray(int[] nums) {\n    int maxSum = nums[0], curr = nums[0];\n    for (int i = 1; i < nums.length; i++) {\n        curr = Math.max(nums[i], curr + nums[i]);\n        maxSum = Math.max(maxSum, curr);\n    }\n    return maxSum;\n}",
-      js: "function maxSubArray(nums) {\n  let maxSum = nums[0], curr = nums[0];\n  for (let i = 1; i < nums.length; i++) {\n    curr = Math.max(nums[i], curr + nums[i]);\n    maxSum = Math.max(maxSum, curr);\n  }\n  return maxSum;\n}",
+      python: "arr = [10, 20, 30, 40, 50]\nfor i in range(len(arr)):\n    print(arr[i])",
+      cpp: "int arr[] = {10, 20, 30, 40, 50};\nint n = sizeof(arr) / sizeof(arr[0]);\nfor (int i = 0; i < n; i++) {\n    cout << arr[i] << \" \";\n}",
+      java: "int[] arr = {10, 20, 30, 40, 50};\nfor (int i = 0; i < arr.length; i++) {\n    System.out.print(arr[i] + \" \");\n}",
+      js: "const arr = [10, 20, 30, 40, 50];\nfor (let i = 0; i < arr.length; i++) {\n    console.log(arr[i]);\n}",
     },
     interviewPoints: [
-      "Kadane's is the must-know O(n) max subarray.",
-      "Prefix sums solve range sum in O(1).",
-      "Anagrams: sort strings or use frequency map.",
+      "Array indexing generally takes O(1).",
+      "Linear search takes O(n).",
+      "Inserting or deleting in the middle takes O(n) because elements may need shifting.",
+      "Understand the difference between arrays and linked lists.",
+      "Understand static arrays versus dynamic arrays.",
     ],
   },
   {
-    id: "searching",
-    title: "Searching Algorithms",
-    category: "Technique",
+    id: "string-manipulation",
+    title: "3. String Manipulation",
+    category: "Beginner",
     difficulty: "Easy",
-    icon: "🔍",
-    shortDesc: "Linear, Binary Search, and Search on Answer.",
-    explanation: "Linear Search: O(n). Check each item.\n\nBinary Search: O(log n). Requires sorted array.\n\nAdvanced:\n• First/Last Occurrence\n• Lower/Upper Bound\n• Rotated Sorted Array\n• Peak Element\n• Binary Search on Answer (Sqrt, Koko Eating Bananas)",
-    codeExamples: {
-      python: "def binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target: return mid\n        if arr[mid] < target: lo = mid + 1\n        else: hi = mid - 1\n    return -1",
-      cpp: "int binarySearch(vector<int>& arr, int t) {\n    int lo = 0, hi = arr.size() - 1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (arr[mid] == t) return mid;\n        if (arr[mid] < t) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return -1;\n}",
-      java: "int binarySearch(int[] arr, int t) {\n    int lo = 0, hi = arr.length - 1;\n    while (lo <= hi) {\n        int mid = lo + (hi - lo) / 2;\n        if (arr[mid] == t) return mid;\n        if (arr[mid] < t) lo = mid + 1;\n        else hi = mid - 1;\n    }\n    return -1;\n}",
-      js: "function binarySearch(arr, t) {\n  let lo = 0, hi = arr.length - 1;\n  while (lo <= hi) {\n    const mid = Math.floor((lo + hi) / 2);\n    if (arr[mid] === t) return mid;\n    if (arr[mid] < t) lo = mid + 1;\n    else hi = mid - 1;\n  }\n  return -1;\n}",
-    },
-    interviewPoints: [
-      "Always calculate mid as lo + (hi-lo)/2 to prevent overflow.",
-      "Rotated Array: check which half is sorted.",
-      "Search on Answer: when asked for min/max capacity.",
+    icon: "🔤",
+    shortDesc: "Reversal, palindrome, anagrams.",
+    tutorialLink: "https://www.geeksforgeeks.org/string-data-structure/",
+    theory: `### 1. Core Concepts
+Strings are sequences of characters used to represent and manipulate text.
+- **String creation and indexing**
+- **String traversal**
+- **String slicing**
+- **String reversal**
+- **Palindrome checking**
+- **Character frequency**
+- **Anagram checking**
+- **Substrings and subsequences**
+- **String immutability**
+- **Pattern matching**
+
+### 2. Code Implementations
+\`\`\`python
+# Reverse a string
+s = "algovision"
+print(s[::-1])
+
+# Check palindrome
+s = "madam"
+print(s == s[::-1])
+
+# Character frequency
+s = "banana"
+freq = {}
+for ch in s:
+    freq[ch] = freq.get(ch, 0) + 1
+print(freq)
+\`\`\``,
+    complexity: [
+      { op: "Reversal", time: "O(N)", space: "O(N)" },
+      { op: "Palindrome Check", time: "O(N)", space: "O(1)" },
+      { op: "Anagram Check", time: "O(N log N) or O(N)", space: "O(1) or O(N)" },
     ],
-  },
-  {
-    id: "sorting",
-    title: "Sorting Algorithms",
-    category: "Technique",
-    difficulty: "Medium",
-    icon: "🔀",
-    shortDesc: "Merge, Quick, and Heap sort.",
-    explanation: "• Bubble/Selection/Insertion: O(n²) — learn for basics.\n• Merge Sort: O(n log n), Stable, O(n) space.\n• Quick Sort: O(n log n) avg, In-place, Unstable.\n• Heap Sort: O(n log n), In-place.\n• Counting/Radix: O(n + k) for integers.",
+    problems: {
+      Easy: [
+        "Reverse a string.",
+        "Check palindrome.",
+        "Count vowels and consonants.",
+        "Find string length without using len().",
+      ],
+      Medium: [
+        "Check whether two strings are anagrams.",
+        "Find the first non-repeating character.",
+        "Remove duplicate characters.",
+        "Find the longest common prefix.",
+      ],
+      Hard: [
+        "Longest palindromic substring.",
+        "Minimum window substring.",
+        "Implement pattern matching.",
+      ],
+    },
     codeExamples: {
-      python: "def merge_sort(arr):\n    if len(arr) <= 1: return arr\n    mid = len(arr) // 2\n    L, R = merge_sort(arr[:mid]), merge_sort(arr[mid:])\n    res, i, j = [], 0, 0\n    while i < len(L) and j < len(R):\n        if L[i] < R[j]: res.append(L[i]); i += 1\n        else: res.append(R[j]); j += 1\n    return res + L[i:] + R[j:]",
-      cpp: "void mergeSort(vector<int>& arr, int l, int r) {\n    if (l >= r) return;\n    int m = l + (r - l) / 2;\n    mergeSort(arr, l, m);\n    mergeSort(arr, m + 1, r);\n    // merge...\n}",
-      java: "void mergeSort(int[] arr, int l, int r) {\n    if (l >= r) return;\n    int m = l + (r - l) / 2;\n    mergeSort(arr, l, m);\n    mergeSort(arr, m + 1, r);\n    // merge...\n}",
-      js: "function mergeSort(arr) {\n  if (arr.length <= 1) return arr;\n  const mid = Math.floor(arr.length / 2);\n  const L = mergeSort(arr.slice(0, mid));\n  const R = mergeSort(arr.slice(mid));\n  // merge...\n  return [];\n}",
+      python: "s = 'algovision'\nprint(s[::-1])\n\ns = 'banana'\nfreq = {}\nfor ch in s:\n    freq[ch] = freq.get(ch, 0) + 1\nprint(freq)",
+      cpp: "string s = \"algovision\";\nreverse(s.begin(), s.end());\ncout << s;",
+      java: "String s = \"algovision\";\nStringBuilder sb = new StringBuilder(s);\nsb.reverse();\nSystem.out.println(sb.toString());",
+      js: "let s = 'algovision';\nconsole.log(s.split('').reverse().join(''));",
     },
     interviewPoints: [
-      "Merge sort is preferred for linked lists.",
-      "Quicksort worst case is O(n²) — use random pivot to avoid.",
-      "Stability matters when sorting objects by multiple keys.",
-    ],
-  },
-  {
-    id: "hashing",
-    title: "Hashing",
-    category: "Linear",
-    difficulty: "Medium",
-    icon: "🗺️",
-    shortDesc: "Hash tables, frequency maps, and Two Sum.",
-    explanation: "Hash tables map keys to values using a hash function for O(1) average access.\n\nKey Patterns:\n• Frequency map\n• Duplicate detection\n• Two Sum\n• Intersection/Union\n• Group Anagrams\n• Longest Consecutive Sequence\n• Subarray Sum = K",
-    codeExamples: {
-      python: "def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        diff = target - n\n        if diff in seen: return [seen[diff], i]\n        seen[n] = i\n    return []",
-      cpp: "vector<int> twoSum(vector<int>& nums, int t) {\n    unordered_map<int,int> seen;\n    for (int i = 0; i < nums.size(); i++) {\n        if (seen.count(t - nums[i])) return {seen[t-nums[i]], i};\n        seen[nums[i]] = i;\n    }\n    return {};\n}",
-      java: "int[] twoSum(int[] nums, int t) {\n    Map<Integer,Integer> seen = new HashMap<>();\n    for (int i = 0; i < nums.length; i++) {\n        if (seen.containsKey(t - nums[i])) return new int[]{seen.get(t-nums[i]), i};\n        seen.put(nums[i], i);\n    }\n    return new int[]{};\n}",
-      js: "function twoSum(nums, t) {\n  const seen = new Map();\n  for (let i = 0; i < nums.length; i++) {\n    const diff = t - nums[i];\n    if (seen.has(diff)) return [seen.get(diff), i];\n    seen.set(nums[i], i);\n  }\n  return [];\n}",
-    },
-    interviewPoints: [
-      "Two Sum — the most common HashMap interview question.",
-      "Subarray Sum = K uses prefix sum + hashmap.",
-      "Group Anagrams uses sorted string as key.",
+      "Strings may be immutable depending on the language.",
+      "Understand ASCII and Unicode.",
+      "Know the difference between substring and subsequence.",
+      "String concatenation can have different complexity depending on the language.",
     ],
   }
 ];

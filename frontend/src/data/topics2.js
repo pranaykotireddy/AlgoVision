@@ -1,102 +1,137 @@
 export const TOPICS_2 = [
   {
-    id: "linked-lists",
-    title: "Linked Lists",
-    category: "Linear",
+    id: "hashing",
+    title: "4. Hashing",
+    category: "Beginner",
     difficulty: "Medium",
-    icon: "🔗",
-    shortDesc: "Singly, Doubly, Floyd's Cycle, Reverse.",
-    explanation: "Nodes connected by pointers.\n\nPatterns:\n• Reverse a linked list\n• Find middle (Slow/Fast)\n• Cycle detection (Floyd's)\n• Merge sorted lists\n• Remove Nth from end\n• Reverse in K-groups",
+    icon: "🗺️",
+    shortDesc: "HashMap, HashSet, frequency counting.",
+    tutorialLink: "https://www.geeksforgeeks.org/hashing-data-structure/",
+    theory: `### 1. Core Concepts
+Hashing is a technique that maps data to locations using a hash function. It enables efficient insertion, searching, and deletion.
+- **Hash functions**
+- **Hash tables**
+- **HashMap / Dictionary**
+- **HashSet**
+- **Key-value pairs**
+- **Hash collisions**
+- **Collision resolution**
+- **Frequency counting**
+- **Direct addressing**
+- **Load factor**
+
+### 2. Code Implementation (Frequency Counting)
+\`\`\`python
+arr = [1, 2, 2, 3, 3, 3, 4]
+freq = {}
+for num in arr:
+    freq[num] = freq.get(num, 0) + 1
+print(freq)
+\`\`\``,
+    complexity: [
+      { op: "Average Lookup", time: "O(1)", space: "O(N)" },
+      { op: "Worst-case Lookup", time: "O(N)", space: "O(N)" },
+    ],
+    problems: {
+      Easy: [
+        "Count frequencies.",
+        "Find duplicate elements.",
+        "Find the first repeating element.",
+      ],
+      Medium: [
+        "Two Sum.",
+        "Group Anagrams.",
+        "Longest Consecutive Sequence.",
+        "Subarray Sum Equals K.",
+      ],
+      Hard: [
+        "Count distinct elements in every window.",
+        "Longest substring with K distinct characters.",
+        "Design an LRU Cache.",
+      ],
+    },
     codeExamples: {
-      python: "def reverse(head):\n    prev = None\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev",
-      cpp: "ListNode* reverse(ListNode* head) {\n    ListNode* prev = nullptr;\n    while (head) {\n        ListNode* nxt = head->next;\n        head->next = prev;\n        prev = head;\n        head = nxt;\n    }\n    return prev;\n}",
-      java: "ListNode reverse(ListNode head) {\n    ListNode prev = null;\n    while (head != null) {\n        ListNode nxt = head.next;\n        head.next = prev;\n        prev = head;\n        head = nxt;\n    }\n    return prev;\n}",
-      js: "function reverse(head) {\n  let prev = null;\n  while (head) {\n    const nxt = head.next;\n    head.next = prev;\n    prev = head;\n    head = nxt;\n  }\n  return prev;\n}",
+      python: "arr = [1, 2, 2, 3, 3, 3, 4]\nfreq = {}\nfor num in arr:\n    freq[num] = freq.get(num, 0) + 1\nprint(freq)",
+      cpp: "unordered_map<int, int> freq;\nint arr[] = {1, 2, 2, 3, 3, 3, 4};\nfor (int x : arr) freq[x]++;",
+      java: "HashMap<Integer, Integer> freq = new HashMap<>();\nint[] arr = {1, 2, 2, 3, 3, 3, 4};\nfor (int x : arr) freq.put(x, freq.getOrDefault(x, 0) + 1);",
+      js: "const arr = [1, 2, 2, 3, 3, 3, 4];\nconst freq = {};\nfor (const num of arr) freq[num] = (freq[num] || 0) + 1;",
     },
     interviewPoints: [
-      "Always save next pointer before reversing.",
-      "Floyd's cycle detection is the industry standard.",
-      "Dummy nodes simplify insertion at head.",
+      "Average HashMap lookup: O(1).",
+      "Worst-case lookup can be O(n).",
+      "HashSet stores unique elements.",
+      "HashMap stores key-value pairs.",
+      "Understand collision handling.",
     ],
   },
   {
-    id: "stacks-queues",
-    title: "Stacks and Queues",
-    category: "Linear",
-    difficulty: "Easy",
-    icon: "📚",
-    shortDesc: "Min stack, monotonic stack, expressions.",
-    explanation: "Stack: LIFO. Queue: FIFO.\n\nAdvanced:\n• Min Stack\n• Monotonic Stack (Next Greater Element)\n• Monotonic Queue (Sliding Window Max)\n• Infix to Postfix\n• Queue using stacks",
-    codeExamples: {
-      python: "def next_greater(nums):\n    res, stack = [], []\n    for i in range(len(nums)-1, -1, -1):\n        while stack and stack[-1] <= nums[i]: stack.pop()\n        res.append(stack[-1] if stack else -1)\n        stack.append(nums[i])\n    return res[::-1]",
-      cpp: "vector<int> nextGreater(vector<int>& nums) {\n    vector<int> res(nums.size(), -1);\n    stack<int> st;\n    for (int i = 0; i < nums.size(); i++) {\n        while (!st.empty() && nums[st.top()] < nums[i]) {\n            res[st.top()] = nums[i]; st.pop();\n        }\n        st.push(i);\n    }\n    return res;\n}",
-      java: "int[] nextGreater(int[] nums) {\n    int[] res = new int[nums.length];\n    Arrays.fill(res, -1);\n    Deque<Integer> st = new ArrayDeque<>();\n    for (int i = 0; i < nums.length; i++) {\n        while (!st.isEmpty() && nums[st.peek()] < nums[i])\n            res[st.pop()] = nums[i];\n        st.push(i);\n    }\n    return res;\n}",
-      js: "function nextGreater(nums) {\n  const res = new Array(nums.length).fill(-1);\n  const st = [];\n  for (let i = 0; i < nums.length; i++) {\n    while (st.length && nums[st[st.length-1]] < nums[i])\n      res[st.pop()] = nums[i];\n    st.push(i);\n  }\n  return res;\n}",
-    },
-    interviewPoints: [
-      "Monotonic stack is critical for 'next greater/smaller' patterns.",
-      "Min Stack requires storing pairs or tracking diff.",
-      "Queue using 2 Stacks: amortized O(1).",
-    ],
-  },
-  {
-    id: "recursion",
-    title: "Recursion and Backtracking",
-    category: "Technique",
-    difficulty: "Hard",
-    icon: "🔄",
-    shortDesc: "Subsets, Permutations, N-Queens.",
-    explanation: "Backtracking is smart recursion that undoes choices.\n\nPatterns:\n• Subsets/Subsequences\n• Permutations\n• Combination Sum\n• Generate Parentheses\n• N-Queens\n• Sudoku Solver\n• Maze/Path finding",
-    codeExamples: {
-      python: "def subsets(nums):\n    res = []\n    def bt(start, path):\n        res.append(path[:])\n        for i in range(start, len(nums)):\n            path.append(nums[i])\n            bt(i + 1, path)\n            path.pop()\n    bt(0, [])\n    return res",
-      cpp: "void bt(vector<int>& nums, int start, vector<int>& path, vector<vector<int>>& res) {\n    res.push_back(path);\n    for (int i = start; i < nums.size(); i++) {\n        path.push_back(nums[i]);\n        bt(nums, i + 1, path, res);\n        path.pop_back();\n    }\n}",
-      java: "void bt(int[] nums, int start, List<Integer> path, List<List<Integer>> res) {\n    res.add(new ArrayList<>(path));\n    for (int i = start; i < nums.length; i++) {\n        path.add(nums[i]);\n        bt(nums, i + 1, path, res);\n        path.remove(path.size() - 1);\n    }\n}",
-      js: "function subsets(nums) {\n  const res = [];\n  function bt(start, path) {\n    res.push([...path]);\n    for (let i = start; i < nums.length; i++) {\n      path.push(nums[i]);\n      bt(i + 1, path);\n      path.pop();\n    }\n  }\n  bt(0, []);\n  return res;\n}",
-    },
-    interviewPoints: [
-      "Prune branches early to avoid TLE.",
-      "Draw the recursion tree on paper first.",
-      "N-Queens uses sets/arrays to track attack zones.",
-    ],
-  },
-  {
-    id: "trees",
-    title: "Trees and Binary Trees",
-    category: "Non-linear",
+    id: "two-pointers",
+    title: "5. Two Pointers",
+    category: "Beginner",
     difficulty: "Medium",
-    icon: "🌳",
-    shortDesc: "Traversals, Height, LCA, Path Sum.",
-    explanation: "Hierarchical structure.\n\nMust Know:\n• Pre/In/Post-order Traversal\n• Level-order (BFS)\n• Height & Depth\n• Diameter\n• Balanced Tree check\n• Lowest Common Ancestor\n• Path Sum\n• Serialize/Deserialize",
-    codeExamples: {
-      python: "def max_depth(root):\n    if not root: return 0\n    return 1 + max(max_depth(root.left), max_depth(root.right))",
-      cpp: "int maxDepth(TreeNode* root) {\n    if (!root) return 0;\n    return 1 + max(maxDepth(root->left), maxDepth(root->right));\n}",
-      java: "int maxDepth(TreeNode root) {\n    if (root == null) return 0;\n    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}",
-      js: "function maxDepth(root) {\n  if (!root) return 0;\n  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));\n}",
-    },
-    interviewPoints: [
-      "In-order traversal of BST gives sorted order.",
-      "Level order traversal uses a Queue.",
-      "LCA: if both nodes found in left and right, root is LCA.",
+    icon: "👉👈",
+    shortDesc: "Opposite direction, same direction, fast & slow.",
+    tutorialLink: "https://www.geeksforgeeks.org/two-pointers-technique/",
+    theory: `### 1. Core Concepts
+Two Pointers is an algorithmic technique that uses two indices to process arrays, strings, or linked lists efficiently.
+- **Opposite-direction pointers**
+- **Same-direction pointers**
+- **Slow and fast pointers**
+- **Left and right pointers**
+- **Pair sum**
+- **Three Sum**
+- **Removing duplicates**
+- **Partitioning arrays**
+- **In-place modifications**
+
+### 2. Code Implementation (Pair Sum)
+\`\`\`python
+arr = [1, 2, 4, 6, 8, 9]
+target = 10
+left = 0
+right = len(arr) - 1
+while left < right:
+    total = arr[left] + arr[right]
+    if total == target:
+        print(arr[left], arr[right])
+        break
+    elif total < target:
+        left += 1
+    else:
+        right -= 1
+\`\`\``,
+    complexity: [
+      { op: "Time Complexity", time: "O(N)", space: "O(1)" },
     ],
-  },
-  {
-    id: "bst",
-    title: "Binary Search Trees",
-    category: "Non-linear",
-    difficulty: "Medium",
-    icon: "🌲",
-    shortDesc: "Search, Insert, Delete, Validate BST.",
-    explanation: "BST: Left < Root < Right.\n\nOperations:\n• Search / Insert / Delete\n• Min / Max\n• Validate BST\n• Kth smallest/largest\n• Convert Sorted Array to BST",
+    problems: {
+      Easy: [
+        "Reverse an array.",
+        "Check palindrome.",
+        "Remove duplicates from sorted array.",
+      ],
+      Medium: [
+        "Two Sum II.",
+        "Container With Most Water.",
+        "Three Sum.",
+        "Sort Colors.",
+      ],
+      Hard: [
+        "Trapping Rain Water.",
+        "Four Sum.",
+        "Minimum Window Substring.",
+      ],
+    },
     codeExamples: {
-      python: "def insert(root, val):\n    if not root: return TreeNode(val)\n    if val < root.val: root.left = insert(root.left, val)\n    else: root.right = insert(root.right, val)\n    return root",
-      cpp: "TreeNode* insert(TreeNode* root, int val) {\n    if (!root) return new TreeNode(val);\n    if (val < root->val) root->left = insert(root->left, val);\n    else root->right = insert(root->right, val);\n    return root;\n}",
-      java: "TreeNode insert(TreeNode root, int val) {\n    if (root == null) return new TreeNode(val);\n    if (val < root.val) root.left = insert(root.left, val);\n    else root.right = insert(root.right, val);\n    return root;\n}",
-      js: "function insert(root, val) {\n  if (!root) return new TreeNode(val);\n  if (val < root.val) root.left = insert(root.left, val);\n  else root.right = insert(root.right, val);\n  return root;\n}",
+      python: "arr = [1, 2, 4, 6, 8, 9]\ntarget = 10\nleft, right = 0, len(arr) - 1\nwhile left < right:\n    total = arr[left] + arr[right]\n    if total == target: break\n    elif total < target: left += 1\n    else: right -= 1",
+      cpp: "int arr[] = {1, 2, 4, 6, 8, 9};\nint target = 10, left = 0, right = 5;\nwhile (left < right) {\n    int sum = arr[left] + arr[right];\n    if (sum == target) break;\n    else if (sum < target) left++;\n    else right--;\n}",
+      java: "int[] arr = {1, 2, 4, 6, 8, 9};\nint target = 10, left = 0, right = arr.length - 1;\nwhile (left < right) {\n    int sum = arr[left] + arr[right];\n    if (sum == target) break;\n    else if (sum < target) left++;\n    else right--;\n}",
+      js: "const arr = [1, 2, 4, 6, 8, 9];\nlet target = 10, left = 0, right = arr.length - 1;\nwhile (left < right) {\n    const sum = arr[left] + arr[right];\n    if (sum === target) break;\n    else if (sum < target) left++;\n    else right--;\n}",
     },
     interviewPoints: [
-      "Validate BST: pass min/max bounds down, not just parent values.",
-      "Kth Smallest uses in-order traversal with counter.",
-      "Deleting a node with 2 children: replace with successor.",
+      "Often reduces O(n²) to O(n).",
+      "Sorted arrays are particularly useful.",
+      "Understand when pointers move.",
+      "Avoid unnecessary nested loops.",
     ],
   }
 ];
