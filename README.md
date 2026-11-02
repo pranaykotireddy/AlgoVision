@@ -14,7 +14,7 @@
 
 ## ✨ Features
 
-### 🎨 3D Algorithm Visualizations (10 Types)
+### 🎨 10 Interactive 3D Visualizers
 - **Sorting Race** — Watch bars animate through bubble, selection, insertion sort
 - **Array Blocks** — Interactive 3D representation of any array
 - **Sliding Window** — Visual window that slides across the array
@@ -26,17 +26,16 @@
 - **Recursion Call Stack** — See the stack grow as functions recurse
 - **Stack Push/Pop** — Watch elements enter and leave a 3D stack
 
-### 🧠 AI Code Tracer
-Write Python code, click **Trace**, and watch it execute line-by-line. The AI (Groq LLaMA 3.3) simulates the code and returns every frame with:
-- Line being executed
-- Current variables
-- Array state
-- Console output
+### 🧠 AI Code Tracer & Explainer
+- **Line-by-line AI explanations** powered by Groq (LLaMA 3.3)
+- **Extracts arrays** from your code using AI
+- **Highlights active lines** in Monaco Editor
+- **Error detection** (syntax, runtime) from multi-language execution
 
 ### 💻 Multi-Language Code Playground
-- Write, run, and debug in **7 languages**: Python, JavaScript, C++, Java, C, Go, Rust
-- Monaco Editor (VS Code in the browser)
-- Run code and view real-time output
+- **7 languages**: Python, JavaScript, C++, Java, C, Go, Rust
+- Powered by OnlineCompiler.io API
+- Run, debug, and visualize in real-time
 
 ### 🤖 AI Tutor
 - **Explain My Code** — Line-by-line explanations from Groq AI
@@ -44,13 +43,13 @@ Write Python code, click **Trace**, and watch it execute line-by-line. The AI (G
 - **Chat with AI** — Persistent conversation with context
 
 ### 📚 Learn Hub (45 DSA Topics)
-- Beginner → Expert roadmap
+- **Beginner → Expert roadmap**
 - Each topic includes:
-  - Deep theory
-  - Multi-language code examples
+  - Deep theory (GeeksforGeeks style)
+  - Code examples in 4 languages
   - Practice problems (Easy / Medium / Hard)
   - Interview notes
-  - GeeksforGeeks links
+  - Links to GfG resources
 
 ---
 
@@ -66,7 +65,6 @@ Write Python code, click **Trace**, and watch it execute line-by-line. The AI (G
 | **Code Execution** | OnlineCompiler.io API |
 | **AI** | Groq API (LLaMA 3.3 70B) |
 | **Backend** | Node.js, Express |
-| **Code Tracer** | AI-powered execution simulation |
 | **Deployment** | Vercel (frontend), Render (backend) |
 
 ---
@@ -83,52 +81,3 @@ Write Python code, click **Trace**, and watch it execute line-by-line. The AI (G
 ```bash
 git clone https://github.com/pranaykotireddy/AlgoVision.git
 cd AlgoVision
-
-
-AlgoVision/
-├── backend/
-│   ├── routes/
-│   │   ├── chat.js         # AI chat
-│   │   ├── explain.js      # Line-by-line code explanation
-│   │   ├── extract.js      # AI array extraction
-│   │   ├── run.js          # Code execution (OnlineCompiler)
-│   │   ├── trace.js        # Python tracer (sys.settrace)
-│   │   └── visualize.js    # AI code simulator
-│   ├── server.js
-│   ├── .env
-│   └── package.json
-│
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Navbar.jsx
-    │   │   ├── EditorPanel.jsx
-    │   │   ├── OutputPanel.jsx
-    │   │   ├── ChatPanel.jsx
-    │   │   ├── MiniCompiler.jsx
-    │   │   ├── CodeScene3D.jsx
-    │   │   ├── DSAScene3D.jsx
-    │   │   └── ErrorBoundary.jsx
-    │   ├── pages/
-    │   │   ├── Home.jsx
-    │   │   ├── Playground.jsx
-    │   │   ├── Learn.jsx
-    │   │   ├── TopicDetail.jsx
-    │   │   └── Visualizer.jsx
-    │   ├── data/
-    │   │   ├── languages.js
-    │   │   ├── topics1.js
-    │   │   ├── topics2.js
-    │   │   ├── topics3.js
-    │   │   ├── topics4.js
-    │   │   ├── topics5.js
-    │   │   ├── topics6.js
-    │   │   └── topics7.js
-    │   ├── utils/
-    │   │   ├── runCode.js
-    │   │   ├── askAI.js
-    │   │   └── sortingAlgorithms.js
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── index.css
-    └── package.json
