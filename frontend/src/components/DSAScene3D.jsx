@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Text, Box, Sphere, Grid } from "@react-three/drei";
 
-export default function DSAScene3D({ type, array, comparing, swapped, currentStep }) {
+export default function DSAScene3D({ type, array, comparing, swapped }) {
   const safeArray = Array.isArray(array) && array.length > 0 ? array : [5, 2, 9, 1, 7];
 
   return (
@@ -10,26 +10,24 @@ export default function DSAScene3D({ type, array, comparing, swapped, currentSte
       <directionalLight position={[10, 10, 10]} intensity={1} castShadow />
       <Grid args={[40, 40]} cellColor="#2a2a3e" sectionColor="#7c3aed" fadeDistance={30} />
 
-      {/* 🔥 Add key={currentStep} to force a full rebuild on each step */}
-      <group key={`step-${currentStep}`}>
-        {type === "sorting" && <SortingBars array={safeArray} comparing={comparing} swapped={swapped} />}
-        {type === "array" && <ArrayBlocks array={safeArray} />}
-        {type === "sliding-window" && <SlidingWindow array={safeArray} />}
-        {type === "two-pointers" && <TwoPointers array={safeArray} />}
-        {type === "binary-search" && <BinarySearch array={safeArray} />}
-        {type === "hashing" && <HashMapBuckets array={safeArray} />}
-        {type === "kadane" && <KadaneSum array={safeArray} />}
-        {type === "linked-list" && <LinkedListPointer array={safeArray} />}
-        {type === "recursion" && <RecursionStack array={safeArray} />}
-        {type === "stack" && <StackAnimation array={safeArray} />}
-      </group>
+      {/* 🔥 10 DISTINCT VISUALIZERS */}
+      {type === "sorting" && <SortingBars array={safeArray} comparing={comparing} swapped={swapped} />}
+      {type === "array" && <ArrayBlocks array={safeArray} />}
+      {type === "sliding-window" && <SlidingWindow array={safeArray} />}
+      {type === "two-pointers" && <TwoPointers array={safeArray} />}
+      {type === "binary-search" && <BinarySearch array={safeArray} />}
+      {type === "hashing" && <HashMapBuckets array={safeArray} />}
+      {type === "kadane" && <KadaneSum array={safeArray} />}
+      {type === "linked-list" && <LinkedListNodes array={safeArray} />}
+      {type === "recursion" && <RecursionStack array={safeArray} />}
+      {type === "stack" && <StackVisualizer array={safeArray} />}
 
       <OrbitControls enablePan={false} minDistance={10} maxDistance={40} />
     </Canvas>
   );
 }
 
-// 🔥 1. Sorting Bars
+// 1. Sorting Bars
 function SortingBars({ array, comparing, swapped }) {
   const max = Math.max(...array, 1);
   return array.map((val, i) => {
@@ -37,7 +35,6 @@ function SortingBars({ array, comparing, swapped }) {
     if (comparing?.includes(i)) color = "#facc15";
     if (swapped?.includes(i)) color = "#ef4444";
     const height = (val / max) * 6;
-
     return (
       <group key={`sort-${i}-${val}`} position={[(i - array.length / 2) * 1.2, 0, 0]}>
         <Box args={[0.8, height, 0.8]} position={[0, height / 2, 0]} castShadow>
@@ -51,7 +48,7 @@ function SortingBars({ array, comparing, swapped }) {
   });
 }
 
-// 🔥 2. Array Blocks (Now animates with Play!)
+// 2. Array Blocks
 function ArrayBlocks({ array }) {
   return array.map((val, i) => (
     <group key={`array-${i}-${val}`} position={[(i - array.length / 2) * 1.5, 0, 0]}>
@@ -65,11 +62,10 @@ function ArrayBlocks({ array }) {
   ));
 }
 
-// 🔥 3. Sliding Window
+// 3. Sliding Window
 function SlidingWindow({ array }) {
   const windowStart = Math.max(0, Math.floor(array.length / 2) - 1);
   const windowEnd = Math.min(array.length - 1, windowStart + 2);
-
   return array.map((val, i) => {
     const inWindow = i >= windowStart && i <= windowEnd;
     return (
@@ -85,12 +81,12 @@ function SlidingWindow({ array }) {
   });
 }
 
-// 🔥 4. Two Pointers
+// 4. Two Pointers
 function TwoPointers({ array }) {
   return array.map((val, i) => {
     let color = "#7c3aed";
-    if (i === 0) color = "#facc15";
-    if (i === array.length - 1) color = "#ef4444";
+    if (i === 0) color = "#facc15"; // Left pointer
+    if (i === array.length - 1) color = "#ef4444"; // Right pointer
     return (
       <group key={`pointer-${i}-${val}`} position={[(i - array.length / 2) * 1.5, 0, 0]}>
         <Box args={[1, 1, 1]}>
@@ -104,13 +100,13 @@ function TwoPointers({ array }) {
   });
 }
 
-// 🔥 5. Binary Search
+// 5. Binary Search
 function BinarySearch({ array }) {
   const mid = Math.floor(array.length / 2);
   return array.map((val, i) => {
     let color = "#7c3aed";
     if (i === mid) color = "#facc15";
-    if (i < mid) color = "#2a2a3e";
+    if (i < mid) color = "#2a2a3e"; // Eliminated
     return (
       <group key={`bin-${i}-${val}`} position={[(i - array.length / 2) * 1.5, 0, 0]}>
         <Box args={[1, 1, 1]}>
@@ -124,7 +120,7 @@ function BinarySearch({ array }) {
   });
 }
 
-// 🔥 6. Hashing
+// 6. HashMap Buckets
 function HashMapBuckets({ array }) {
   return array.map((val, i) => (
     <group key={`hash-${i}-${val}`} position={[(i - array.length / 2) * 2.5, 0, 0]}>
@@ -138,7 +134,7 @@ function HashMapBuckets({ array }) {
   ));
 }
 
-// 🔥 7. Kadane's
+// 7. Kadane's Sum
 function KadaneSum({ array }) {
   return array.map((val, i) => {
     const isPositive = val > 0;
@@ -155,18 +151,16 @@ function KadaneSum({ array }) {
   });
 }
 
-// 🔥 8. Linked List
-function LinkedListPointer({ array }) {
+// 8. Linked List
+function LinkedListNodes({ array }) {
   return array.map((val, i) => (
     <group key={`ll-${i}-${val}`} position={[(i - array.length / 2) * 3, 0, 0]}>
-      <Sphere args={[0.8, 32, 32]}>
-        <meshStandardMaterial color="#7c3aed" />
-      </Sphere>
-      <Text position={[0, 1.5, 0]} fontSize={0.6} color="white" outlineWidth={0.02} outlineColor="#000">
-        {val}
-      </Text>
+      <Box args={[1.5, 1, 1]}>
+        <meshStandardMaterial color="#12121a" wireframe />
+      </Box>
+      <Text position={[0, 0, 0.6]} fontSize={0.5} color="white">{val}</Text>
       {i < array.length - 1 && (
-        <Box args={[2.2, 0.1, 0.1]} position={[1.5, 0, 0]}>
+        <Box args={[1.5, 0.1, 0.1]} position={[1.5, 0, 0]}>
           <meshStandardMaterial color="#06b6d4" />
         </Box>
       )}
@@ -174,7 +168,7 @@ function LinkedListPointer({ array }) {
   ));
 }
 
-// 🔥 9. Recursion Stack
+// 9. Recursion Stack
 function RecursionStack({ array }) {
   return array.map((val, i) => (
     <group key={`rec-${i}-${val}`} position={[0, i * 1.2, 0]}>
@@ -188,8 +182,8 @@ function RecursionStack({ array }) {
   ));
 }
 
-// 🔥 10. Stack Animation
-function StackAnimation({ array }) {
+// 10. Stack Visualizer
+function StackVisualizer({ array }) {
   return array.map((val, i) => (
     <group key={`stack-${i}-${val}`} position={[0, i * 1.2, 0]}>
       <Box args={[3, 1, 3]}>

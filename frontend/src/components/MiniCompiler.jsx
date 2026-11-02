@@ -6,7 +6,6 @@ import { FaPlay, FaSpinner, FaCheckCircle, FaTimesCircle, FaTerminal, FaCube } f
 export default function MiniCompiler({ code, language, onVisualize }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [vizLoading, setVizLoading] = useState(false);
 
   const handleRun = async () => {
     setLoading(true);
@@ -17,20 +16,17 @@ export default function MiniCompiler({ code, language, onVisualize }) {
   };
 
   const handleVisualizeClick = async () => {
-    setVizLoading(true);
     try {
       const { data } = await axios.post("http://localhost:5000/api/extract", { code });
-      
       if (data.array && data.array.length > 0) {
         onVisualize(data.array);
       } else {
-        alert("AI couldn't find an array in this code. Try adding an array like `arr = [5, 2, 9]`.");
+        alert("AI couldn't find an array in this code.");
       }
     } catch (err) {
       console.error(err);
-      alert("Failed to analyze code with AI.");
+      alert("Failed to analyze code.");
     }
-    setVizLoading(false);
   };
 
   return (
@@ -46,15 +42,12 @@ export default function MiniCompiler({ code, language, onVisualize }) {
               {result.success ? 'Success' : 'Error'}
             </span>
           )}
-
           <button 
             onClick={handleVisualizeClick}
-            disabled={vizLoading}
-            className="flex items-center gap-1 text-xs px-3 py-1 bg-accent2/20 text-accent2 rounded-md hover:bg-accent2/30 transition-all disabled:opacity-50"
+            className="flex items-center gap-1 text-xs px-3 py-1 bg-accent2/20 text-accent2 rounded-md hover:bg-accent2/30 transition-all"
           >
-            {vizLoading ? <FaSpinner className="animate-spin" /> : <FaCube />} Visualize
+            <FaCube /> Visualize
           </button>
-
           <button 
             id="mini-compiler-run"
             onClick={handleRun} 
